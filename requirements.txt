@@ -6,3 +6,4 @@ Flask-Mail>=0.10.0
 PyMySQL>=1.1.0
 python-dotenv>=1.0.1
 razorpay>=1.4.2
+gunicorn
