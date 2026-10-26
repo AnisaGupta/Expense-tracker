@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalBites Business Dashboard — Menu Management.">
+    <meta name="theme-color" content="#2E7D32">
+    <title>LocalBites — Menu Management</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/business-dashboard.css') }}">
+
+    <style>
+        /* Hide duplicate top static view cart button if present in top bar */
+        .top-nav .view-cart-static-btn {
+            display: none !important;
+        }
+
+        /* Cart Pop-up Modal Styling */
+        .cart-modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-modal-content {
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            position: relative;
+            text-align: center;
+        }
+
+        .close-cart-modal {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+        }
+
+        .cart-modal-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .cart-modal-footer .btn-primary,
+        .cart-modal-footer .btn-secondary-modal {
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            flex: 1;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .cart-modal-footer .btn-primary {
+            background-color: #FF6B35;
+            color: white;
+        }
+
+        .cart-modal-footer .btn-secondary-modal {
+            background-color: #E2E8F0;
+            color: #334155;
+        }
+    </style>
+</head>
+<body class="page-shell" data-page="business-menu">
+
+    <!-- Ambient Blobs -->
+    <div class="blob blob-tr" style="opacity: 0.35; background: radial-gradient(circle, rgba(46,125,50,0.08) 0%, transparent 70%);"></div>
+    <div class="blob blob-bl" style="opacity: 0.35; background: radial-gradient(circle, rgba(255,107,53,0.06) 0%, transparent 70%);"></div>
+
+    <!-- ── TOP NAVIGATION NAVBAR ── -->
+    <nav class="top-nav" id="mainTopNav">
+        <div class="nav-left">
+            <button class="menu-trigger" id="sidebarToggle" aria-label="Toggle Navigation Menu">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="auth-logo-block">
+                <img src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="LocalBites Logo" class="logo-img logo-img-sm"
+                     onerror="this.style.display='none'; document.getElementById('bizMenuFb').style.display='flex';">
+                <div id="bizMenuFb" style="display:none; width:36px; height:36px; position:relative;" aria-hidden="true">
+                    <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+                        <defs><radialGradient id="pinG_bl" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FF8C5A"/><stop offset="100%" stop-color="#E55A25"/></radialGradient></defs>
+                        <path d="M100 12 C65 12 37 40 37 75 C37 120 100 208 100 208 C100 208 163 120 163 75 C163 40 135 12 100 12Z" fill="url(#pinG_bl)" opacity=".96"/>
+                        <circle cx="100" cy="74" r="34" fill="white" opacity=".96"/>
+                        <path d="M80 74 Q80 92 100 92 Q120 92 120 74" stroke="#FF6B35" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                        <line x1="80" y1="74" x2="120" y2="74" stroke="#FF6B35" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M91 63 Q88 55 91 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                        <path d="M100 60 Q97 52 100 44" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                        <path d="M109 63 Q106 55 109 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="wordmark wordmark-md"><span class="l">Local</span><span class="b">Bites</span></div>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <!-- Verification Status Badge -->
+            <div class="header-status-badge approved" id="headerVerificationBadge">
+                <span class="dot"></span> Approved
+            </div>
+<!-- Profile Dropdown Trigger -->
+            <div class="profile-dropdown-wrap" id="profileDropdownWrap">
+                <button class="profile-avatar" id="headerProfileAvatar" aria-label="Toggle Profile Dropdown">
+                    <span id="headerProfileInitials">🏪</span>
+                </button>
+                <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                    <div class="dropdown-header">
+                        <p class="dropdown-biz-name" id="dropdownBizName">Loading Business...</p>
+                        <p class="dropdown-owner-name" id="dropdownOwnerName">Owner Name</p>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/business/profile">
+                        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        My Business Profile
+                    </a>
+                    <a class="dropdown-item" href="/business/dashboard#settings">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        Settings
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout-action text-danger" id="dropdownLogoutBtn">
+                        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── MAIN DASHBOARD CONTAINER ── -->
+    <div class="dashboard-shell-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar-aside" id="sidebarMenu">
+            <!-- Sidebar business details -->
+            <div class="sidebar-biz-header">
+                <div class="biz-avatar-box">
+                    <img id="sidebarBizLogo" src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="Business Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%232e7d32%22/><text x=%2250%25%22 y=%2250%25%22 font-size=%2228%22 fill=%22%23fff%22 font-family=%22sans-serif%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22>LB</text></svg>';">
+                </div>
+                <div class="biz-info-meta">
+                    <h3 class="biz-name-text" id="sidebarBizName">Loading...</h3>
+                    <p class="biz-type-text" id="sidebarBizType">Kitchen Service</p>
+                </div>
+            </div>
+
+            <!-- Sidebar Nav Links -->
+            <nav class="sidebar-nav">
+                <a class="nav-link" href="/business/dashboard#overview" data-page="dashboard">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a class="nav-link" href="/business/profile" data-page="profile">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>My Business</span>
+                </a>
+                <a class="nav-link" href="/business/menu" data-page="menu">
+                    <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span>Menu Management</span>
+                </a>
+                <a class="nav-link" href="/business/orders" data-page="orders">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <span>Orders</span>
+                    <span class="sidebar-badge hidden" id="sidebarOrdersBadge">0</span>
+                </a>
+                <a class="nav-link" href="/business/delivery" data-page="delivery">
+                    <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    <span>Delivery Management</span>
+                    <span class="sidebar-badge hidden" id="sidebarDeliveryBadge">0</span>
+                </a>
+                <a class="nav-link"
+   href="{{ url_for('business.delivery_persons_page') }}"
+   data-page="delivery-persons">
+
+    <svg viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="4"/>
+        <path d="M3 21v-2a6 6 0 0 1 12 0v2"/>
+        <path d="M16 11a4 4 0 0 1 5 4v6"/>
+        <path d="M15 4a4 4 0 0 1 0 7"/>
+    </svg>
+
+    <span>Delivery Persons</span>
+
+</a>
+                <a class="nav-link" href="/business/reviews" data-page="reviews">
+                    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>Reviews</span>
+                </a>
+<a class="nav-link" href="/business/dashboard#analytics" data-page="analytics">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    <span>Analytics</span>
+                </a>
+                <a class="nav-link" href="/business/dashboard#settings" data-page="settings">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <!-- Sidebar footer / Logout -->
+            <div class="sidebar-footer">
+                <button class="nav-logout logout-action" id="sidebarLogoutBtn">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main content view blocks -->
+        <main class="content-body">
+
+            <div class="flex justify-between items-center flex-wrap gap-4 mb-6">
+                <div>
+                    <h1 class="page-title text-2xl font-extrabold mb-1">Menu Management</h1>
+                    <p class="text-secondary text-sm">Add new dishes, set pricing, adjust preparation times, and toggle availability.</p>
+                </div>
+                <button class="btn btn-secondary" id="btnAddFoodOpen">
+                    <span style="font-size: 1.25rem; font-weight: bold; line-height: 0;">+</span> Add Food Item
+                </button>
+            </div>
+
+            <!-- Menu Filter Controls -->
+            <div class="menu-control-bar">
+                <div class="search-wrapper flex-grow-1">
+                    <span class="search-btn-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </span>
+                    <input type="text" id="menuSearchInput" class="search-bar-input" placeholder="Search food items...">
+                </div>
+                <div class="select-wrapper">
+                    <select id="menuFilterCategory" class="filter-select">
+                        <option value="all">All Categories</option>
+                        <option value="mess">Mess Specials</option>
+                        <option value="tiffin">Tiffins</option>
+                        <option value="meals">Meals &amp; Combos</option>
+                        <option value="extras">Sides &amp; Extras</option>
+                        <option value="sweets">Sweets &amp; Desserts</option>
+                    </select>
+                    <span class="select-caret">
+                        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
+                </div>
+                <div class="select-wrapper">
+                    <select id="menuFilterType" class="filter-select">
+                        <option value="all">Veg &amp; Non-Veg</option>
+                        <option value="veg">Pure Veg</option>
+                        <option value="nonveg">Non-Veg</option>
+                    </select>
+                    <span class="select-caret">
+                        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Menu Cards Grid -->
+            <div class="menu-cards-grid" id="menuGrid">
+                <!-- Dynamic Render -->
+            </div>
+
+            <!-- Menu Empty State -->
+            <div id="menuEmptyState" class="empty-state-card hidden">
+                <div class="empty-emoji">🍳</div>
+                <h2 class="empty-title">Your menu is empty</h2>
+                <p class="empty-subtitle">Add your first food item to start receiving orders from local customers.</p>
+                <button class="btn btn-secondary mt-4" id="btnAddFoodEmptyBtn">Add Food Item</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- =====================================================
+         MODAL — ADD / EDIT MENU FOOD ITEM
+    ===================================================== -->
+    <div class="modal-overlay" id="foodModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title" id="foodModalTitle">Add Food Item</h2>
+                <button type="button" class="modal-close" id="btnCloseFoodModal" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="foodItemForm" novalidate>
+                    <!-- Hidden field for ID -->
+                    <input type="hidden" id="foodItemId">
+
+                    <div class="form-group">
+                        <label class="form-label" for="foodName">Food Item Name</label>
+                        <div class="inp-wrap">
+                            <input type="text" id="foodName" class="form-input" placeholder="e.g. Traditional Maharashtrian Thali" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-modal">
+                        <div class="form-group">
+                            <label class="form-label" for="foodCategory">Category</label>
+                            <div class="inp-wrap">
+                                <select id="foodCategory" class="form-select" required>
+                                    <option value="mess">Mess Special</option>
+                                    <option value="tiffin">Tiffins</option>
+                                    <option value="meals" selected>Meals &amp; Combos</option>
+                                    <option value="extras">Sides &amp; Extras</option>
+                                    <option value="sweets">Sweets &amp; Desserts</option>
+                                </select>
+                                <span class="sel-arrow">
+                                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="foodPrice">Price (₹)</label>
+                            <div class="inp-wrap">
+                                <input type="number" id="foodPrice" class="form-input" placeholder="Price in ₹" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-modal mt-3">
+                        <div class="form-group">
+                            <label class="form-label" for="foodType">Type</label>
+                            <div class="inp-wrap">
+                                <select id="foodType" class="form-select" required>
+                                    <option value="veg" selected>Vegetarian (Veg)</option>
+                                    <option value="nonveg">Non-Vegetarian (Non-Veg)</option>
+                                </select>
+                                <span class="sel-arrow">
+                                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="foodPrepTime">Prep Time (mins)</label>
+                            <div class="inp-wrap">
+                                <input type="number" id="foodPrepTime" class="form-input" placeholder="Prep time in mins" min="5" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="foodDesc">Description</label>
+                        <textarea id="foodDesc" class="form-textarea" rows="2" placeholder="Describe ingredients, portion sizes, condiments..." required></textarea>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label" for="foodImageUrl">Food Image URL (Optional)</label>
+                        <div class="inp-wrap">
+                            <input type="url" id="foodImageUrl" class="form-input" placeholder="https://example.com/food-image.jpg">
+                        </div>
+                    </div>
+
+                    <div class="availability-form-toggle mt-4">
+                        <label class="custom-checkbox-lbl">
+                            <input type="checkbox" id="foodAvailable" checked>
+                            <span class="checkmark"></span>
+                            <div class="chk-details">
+                                <span class="chk-name">Make Available Immediately</span>
+                                <span class="chk-desc text-secondary">Toggle to list this dish instantly in search results</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary btn-full mt-5" id="btnFoodSubmit">
+                        <span class="btn-label" id="foodFormSubmitLabel">Add Food Item</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         MODAL — CART / VIEW CART POPUP
+    ===================================================== -->
+    <div id="cartModal" class="cart-modal">
+        <div class="cart-modal-content">
+            <span class="close-cart-modal">&times;</span>
+            <div class="cart-modal-body">
+                <h3 style="font-weight: 700; font-size: 1.25rem; margin-bottom: 8px;">Item Added to Cart!</h3>
+                <p style="color: #64748B; font-size: 0.9rem;">You have items in your cart ready for order.</p>
+            </div>
+            <div class="cart-modal-footer">
+                <button id="continueShoppingBtn" class="btn-secondary-modal">Continue</button>
+                <a href="{{ url_for('customer.cart') if 'customer.cart' in url_for.__globals__['current_app'].view_functions else '/customer/cart' }}" class="btn-primary">View Cart</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast elements -->
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script>window.LB_REAL_BUSINESS = {{ real_business | tojson }};</script>
+    <script src="{{ url_for('static', filename='js/business-state.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/business-menu.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartModal = document.getElementById('cartModal');
+            const closeCartModalBtn = document.querySelector('.close-cart-modal');
+            const continueShoppingBtn = document.getElementById('continueShoppingBtn');
+
+            function showCartModal() {
+                if (cartModal) {
+                    cartModal.style.display = 'flex';
+                }
+            }
+
+            function hideCartModal() {
+                if (cartModal) {
+                    cartModal.style.display = 'none';
+                }
+            }
+
+            // Delegated click listener to handle dynamically generated "Add to Cart" buttons
+            document.body.addEventListener('click', function(e) {
+                if (e.target && (e.target.matches('.add-to-cart-btn') || e.target.closest('.add-to-cart-btn'))) {
+                    showCartModal();
+                }
+            });
+
+            if (closeCartModalBtn) {
+                closeCartModalBtn.addEventListener('click', hideCartModal);
+            }
+
+            if (continueShoppingBtn) {
+                continueShoppingBtn.addEventListener('click', hideCartModal);
+            }
+
+            window.addEventListener('click', function(event) {
+                if (event.target === cartModal) {
+                    hideCartModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

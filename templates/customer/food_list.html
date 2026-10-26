@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalBites — {{ current_category | replace('_', ' ') | title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="page-shell">
+
+    {% include 'customer/_header.html' %}
+
+    <main style="max-width: 1200px; margin: 24px auto; padding: 0 20px;">
+        <div style="margin-bottom: 24px;">
+            <a href="{{ url_for('customer.dashboard') }}" style="font-size: 13px; font-weight: 700; color: var(--clr-text-3, #64748b); text-decoration: none;">&larr; Back to Dashboard</a>
+            <h2 style="font-size: 24px; font-weight: 800; color: var(--clr-text-1, #0f172a); margin-top: 8px; text-transform: capitalize;">
+                {{ current_category | replace('_', ' ') }} 
+                {% if current_category == 'near_me' %}Restaurants{% else %}Items{% endif %}
+            </h2>
+        </div>
+
+       {# --- VIEW FOR NEAR ME (Businesses) --- #}
+{% if current_category == 'near_me' %}
+    {% if businesses %}
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 320px)); gap: 20px; width: 100%; max-width: 900px; padding: 10px;">
+                {% for biz in businesses %}
+                    <div class="food-card" style="background: var(--clr-surface, #fff); border-radius: var(--r-md, 12px); border: 1px solid var(--clr-border-1, #e2e8f0); padding: var(--sp-3, 12px); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+                        <div>
+                            <img src="{% if biz.logo_path %}{{ url_for('customer.customer_business_logo', filename=biz.logo_path) }}{% else %}{{ url_for('static', filename='images/LocalBites.png') }}{% endif %}" alt="{{ biz.business_name }}" style="width: 100%; height: 140px; object-fit: cover; border-radius: var(--r-sm, 8px); margin-bottom: var(--sp-2, 8px);" onerror="this.onerror=null; this.src='/static/images/LocalBites.png';">
+                            <span style="font-size: 11px; font-weight: 600; color: #ea580c; text-transform: uppercase;">{{ biz.type | replace('_', ' ') }}</span>
+                            <h3 style="font-size: 16px; font-weight: 700; color: var(--clr-text-1, #0f172a); margin-top: 2px;">{{ biz.business_name }}</h3>
+                            <p style="font-size: 13px; color: var(--clr-text-3, #64748b); margin-top: 4px;">{{ biz.address or 'Location available' }}</p>
+                        </div>
+                        <a href="{{ url_for('customer.food_details') }}?biz={{ biz.business_id }}" 
+                           onclick="sessionStorage.setItem('selected_provider_id', '{{ biz.business_id }}')" 
+                           class="btn btn-primary btn-full" 
+                           style="margin-top: var(--sp-3, 12px); padding: 8px 12px; font-size: 12px; font-weight: 700; background: #FF6B35; color: #fff; text-align: center; border-radius: 8px; text-decoration: none; display: block;">
+                            Explore Kitchen
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 60px 0;">
+            <p style="color: var(--clr-text-3, #64748b); font-size: 15px;">No nearby businesses found at the moment.</p>
+        </div>
+    {% endif %}
+
+{# --- VIEW FOR FOOD ITEMS (Most Loved, Budget, Categories) --- #}
+{% else %}
+    {% if items %}
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 320px)); gap: 20px; width: 100%; max-width: 900px; padding: 10px;">
+                {% for item in items %}
+                    <div class="food-card" style="background: var(--clr-surface, #fff); border-radius: 16px; border: 1px solid var(--clr-border-1, #e2e8f0); padding: 12px; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        
+                        <!-- Image, Veg Tag & Favorite Button -->
+                        <div style="position: relative;">
+                            <img src="{{ item.image or url_for('static', filename='images/LocalBites.png') }}" alt="{{ item.food_name or item.name }}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px;" onerror="this.onerror=null; this.src='/static/images/LocalBites.png';">
+                            
+                            <!-- Veg / Non-Veg Indicator Tag -->
+                            <div style="position: absolute; top: 10px; left: 10px; background: #fff; padding: 3px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                {% if item.is_veg is defined and not item.is_veg %}
+                                    <span style="display: block; width: 12px; height: 12px; border: 2px solid #d32f2f; border-radius: 2px; position: relative;"><span style="position: absolute; top: 2px; left: 2px; width: 4px; height: 4px; background: #d32f2f; border-radius: 50%;"></span></span>
+                                {% else %}
+                                    <span style="display: block; width: 12px; height: 12px; border: 2px solid #2e7d32; border-radius: 2px; position: relative;"><span style="position: absolute; top: 2px; left: 2px; width: 4px; height: 4px; background: #2e7d32; border-radius: 50%;"></span></span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Favorite Button -->
+                            <button type="button" class="fav-heart-btn" onclick="toggleFavoriteApi(event, '{{ item.menu_id or item.id }}')" aria-label="Favorite Dish" style="position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.15); z-index: 2;">
+                                <i class="fa-regular fa-heart" style="color: #FF6B35; font-size: 15px;"></i>
+                            </button>
+                        </div>
+
+                        <!-- Item Details & Description -->
+                        <div style="margin-top: 12px;">
+                            <span style="font-size: 11px; font-weight: 600; color: var(--clr-text-3, #64748b);">
+                                {{ item.business.business_name if item.business else (item.business_name or 'Local Vendor') }}
+                            </span>
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 2px 0 4px 0;">
+                                {{ item.food_name or item.name or 'Dish' }}
+                            </h3>
+                            <p style="font-size: 13px; color: #64748b; margin: 0 0 12px 0; min-height: 18px;">
+                                {{ item.description or 'Delicious local preparation' }}
+                            </p>
+                        </div>
+
+               <!-- Price & Action Button Row -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; border-top: 1px solid #f1f5f9;">
+                        <span style="font-size: 18px; font-weight: 800; color: #0f172a;">
+                            ₹{{ "%.2f"|format(item.price) if item.price is not none else '0.00' }}
+                        </span>
+
+                        <!-- Change id="cart-btn-container-..." to class="cart-btn-container" data-menu-id="..." -->
+<div class="cart-action-container" data-menu-id="{{ item.menu_id or item.id }}" style="min-width: 90px; display: flex; justify-content: flex-end;">
+    {% set qty = item.current_cart_qty if item.current_cart_qty is defined else 0 %}
+    {% if qty > 0 %}
+        <div style="display: flex; align-items: center; border: 1px solid #FF6B35; border-radius: 8px; background: #fff; overflow: hidden; height: 34px;">
+            <button type="button" onclick="adjustQty('{{ item.menu_id or item.id }}', -1)" style="background: #fff; border: none; color: #FF6B35; padding: 0 10px; font-weight: 700; cursor: pointer;">-</button>
+            <span class="qty-val" style="padding: 0 8px; font-weight: 700; font-size: 14px; color: #333; min-width: 20px; text-align: center;">{{ qty }}</span>
+            <button type="button" onclick="adjustQty('{{ item.menu_id or item.id }}', 1)" style="background: #fff; border: none; color: #FF6B35; padding: 0 10px; font-weight: 700; cursor: pointer;">+</button>
+        </div>
+    {% else %}
+        <button type="button" onclick="addToCartApi('{{ item.menu_id or item.id }}')" style="background: #fff; border: 1px solid #FF6B35; color: #FF6B35; font-weight: 700; padding: 6px 24px; border-radius: 8px; cursor: pointer;">
+            ADD
+        </button>
+    {% endif %}
+</div>
+                    </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 60px 0;">
+            <p style="color: var(--clr-text-3, #64748b); font-size: 15px;">No items found in this category right now.</p>
+        </div>
+    {% endif %}
+{% endif %}
+
+    </main>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+</body>
+</html>

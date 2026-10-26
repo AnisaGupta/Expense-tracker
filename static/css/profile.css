@@ -1,0 +1,245 @@
+/* ============================================================
+   LocalBites — Widescreen Horizontal Profile CSS (profile.css)
+   ============================================================ */
+
+/* Page shell reset */
+body.page-shell[data-page="profile"] {
+    background-color: #f8fafc;
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #0f172a;
+}
+
+/* Widescreen top navigation bar */
+.top-nav {
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.top-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Main content wrapper spanning horizontal real estate */
+.profile-layout-container {
+    max-width: 1200px;
+    width: 90%;
+    margin: 32px auto 60px auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Two-column desktop grid layout */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* Left sidebar card: User Identity & Hero */
+.profile-hero-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px 24px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF6B35, #E55A25);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 auto 16px auto;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
+}
+
+.profile-user-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+}
+
+.profile-user-handle {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0 0 16px 0;
+}
+
+.user-badge-pill {
+    display: inline-block;
+    background: rgba(255, 107, 53, 0.1);
+    color: #FF6B35;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Right main card: Personal information form */
+.profile-details-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.card-section-header {
+    margin-bottom: 24px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 16px;
+}
+
+.section-heading {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+}
+
+.section-subtext {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Form input grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.form-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    color: #0f172a;
+    background: #ffffff;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+}
+
+.form-input:disabled {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+textarea.form-input {
+    height: auto;
+    padding: 12px 14px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+/* Form action area */
+.form-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-save-profile {
+    padding: 0 32px;
+    height: 44px;
+    border-radius: 8px;
+    background: #FF6B35;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(255, 107, 53, 0.25);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-save-profile:hover {
+    background: #e55a25;
+}
+
+/* Sign out button */
+.btn-logout-action {
+    width: 100%;
+    height: 42px;
+    margin-top: 24px;
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fee2e2;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.btn-logout-action:hover {
+    background: #fee2e2;
+}
+
+/* Responsive breakpoint for tablets and mobile devices */
+@media (max-width: 900px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        justify-content: stretch;
+    }
+
+    .btn-save-profile {
+        width: 100%;
+    }
+}

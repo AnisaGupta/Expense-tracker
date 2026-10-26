@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURE CHECKOUT - LocalBites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+    <header class="checkout-header">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="LocalBites Logo" class="logo-img">
+                    <span>LocalBites</span>
+                </a>
+                <span class="secure-title">SECURE CHECKOUT</span>
+            </div>
+            <div class="header-right">
+                <a href="#" class="nav-item"><i class="fa-regular fa-life-ring"></i> Help</a>
+                <a href="#" class="nav-item"><i class="fa-regular fa-user"></i> {{ customer.name }}</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="checkout-layout">
+        <section class="left-panel">
+            <div class="step-card active" id="address-step">
+                <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="step-content">
+                    <div id="address-selection-view">
+                        <h2 class="step-title">Select delivery address</h2>
+                        <p class="step-subtitle">You have a saved address in this location</p>
+                        <div class="address-grid">
+                            {% for addr in addresses %}
+                            <div class="address-box">
+                                <div class="addr-header">
+                                    <i class="fa-solid fa-house"></i>
+                                    <h3>{{ addr.label }}</h3>
+                                </div>
+                                <p class="addr-text">{{ addr.full_address }}</p>
+                                <span class="eta-tag">{{ addr.eta }}</span>
+                                <button class="btn-deliver" onclick="selectAddress('{{ addr.label }}', '{{ addr.full_address }}', '{{ addr.eta }}')">DELIVER HERE</button>
+                            </div>
+                            {% endfor %}
+                            <div class="address-box add-new" onclick="openAddressDrawer()">
+                                <div class="addr-header">
+                                    <i class="fa-solid fa-location-crosshairs text-green"></i>
+                                   <h3>Add New Address</h3>
+                                 </div>
+                                <p class="addr-text">Add a new delivery address for this order</p>
+                                <button type="button" class="btn-add-new">ADD NEW</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="address-selected-view" class="hidden">
+                        <div class="step-header-flex">
+                            <h2 class="step-title">Delivery address <i class="fa-solid fa-circle-check check-icon"></i></h2>
+                            <button class="btn-change" onclick="resetAddressSelection()">CHANGE</button>
+                        </div>
+                        <h3 id="selected-addr-label" class="selected-label">Home</h3>
+                        <p id="selected-addr-text" class="addr-text"></p>
+                        <span id="selected-addr-eta" class="eta-tag">35 MINS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card" id="payment-step">
+                <div class="step-icon"><i class="fa-solid fa-wallet"></i></div>
+                <div class="step-content">
+                    <div id="payment-locked-view">
+                        <h2 class="step-title disabled-text">Payment</h2>
+                    </div>
+                    <div id="payment-unlocked-view" class="hidden">
+                         <h2 class="step-title">Choose payment method</h2>
+                         <div class="payment-options" style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;">
+                           <button type="button" class="btn-proceed-pay" style="flex: 1; background: #28a745;" onclick="payWithCOD()">
+                                <i class="fa-solid fa-money-bill-wave"></i> CASH ON DELIVERY
+                            </button>
+                            <button type="button" class="btn-proceed-pay" style="flex: 1;" onclick="payWithRazorpay()">
+                               <i class="fa-solid fa-credit-card"></i> PAY ONLINE (RAZORPAY)
+                             </button>
+                         </div>
+            </div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="right-panel">
+            <div class="summary-card">
+                <div class="summary-scrollable">
+                    <div class="restaurant-info">
+                        <i class="fa-solid fa-store" style="font-size: 24px; color: var(--primary-orange);"></i>
+                        <div>
+                            <h3>{{ bill.restaurant_name }}</h3>
+                            <p>{{ bill.restaurant_location }}</p>
+                        </div>
+                    </div>
+
+                    <div class="cart-items-list">
+                        {% for item in cart_items %}
+                        <div class="cart-item">
+                            <div class="item-title">
+                                <span class="veg-icon"><i class="fa-solid fa-circle"></i></span>
+                                <span>{{ item.name }}</span>
+                            </div>
+                            <div class="item-qty-control">
+                                <button onclick="updateDbQuantity({{ item.id }}, -1)">-</button>
+                                <span>{{ item.qty }}</span>
+                                <button onclick="updateDbQuantity({{ item.id }}, 1)">+</button>
+                            </div>
+                            <div class="item-price">
+                                <span class="new-price">₹{{ "%.2f"|format(item.price * item.qty) }}</span>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="empty-msg" style="padding: 20px 0; text-align: center; color: var(--text-light);">
+                            Your cart is currently empty.
+                        </p>
+                        {% endfor %}
+                    </div>
+
+                    {% if cart_items %}
+                    <div class="coupon-box">
+                        <i class="fa-solid fa-ticket"></i>
+                        <input type="text" id="couponCodeInput" placeholder="Enter coupon code (e.g. CELEBRATIONS)">
+                        <button type="button" class="btn-apply-coupon" onclick="applyCoupon()">APPLY</button>
+                    </div>
+
+                    <div class="suggestion-box">
+                        <i class="fa-regular fa-comment-dots"></i>
+                        <input type="text" placeholder="Any instructions? We will pass it on...">
+                    </div>
+
+                    <div class="no-contact-box">
+                        <input type="checkbox" id="no-contact" checked>
+                        <label for="no-contact">
+                            <strong>Opt in for No-contact Delivery</strong>
+                            <p>Our delivery partner will call to confirm before drop-off.</p>
+                        </label>
+                    </div>
+
+                    <div class="bill-details">
+                        <h4>Bill Details</h4>
+                        <div class="bill-row">
+                            <span>Item Total</span>
+                            <span id="lblItemTotal">₹{{ "%.2f"|format(bill.item_total) }}</span>
+                        </div>
+                        <div class="bill-row">
+                            <span>Delivery Fee <i class="fa-solid fa-circle-info"></i></span>
+                            <span id="lblDeliveryFee">₹{{ "%.2f"|format(bill.delivery_fee) }}</span>
+                        </div>
+                        <div class="bill-row discount {% if bill.discount == 0 %}hidden{% endif %}" id="discountRow">
+                            <span>Item Discount <i class="fa-solid fa-circle-info"></i></span>
+                            <span id="lblDiscount">- ₹{{ "%.2f"|format(bill.discount) }}</span>
+                        </div>
+                        <div class="bill-row">
+                            <span>GST & Other Charges (5%) <i class="fa-solid fa-circle-info"></i></span>
+                            <span id="lblGst">₹{{ "%.2f"|format(bill.gst_charges) }}</span>
+                        </div>
+                    </div>
+
+                    <hr class="bill-divider">
+
+                    <div class="to-pay-row">
+                        <span>TO PAY</span>
+                        <span id="lblToPay">₹{{ "%.2f"|format(bill.to_pay) }}</span>
+                    </div>
+
+                    <div class="policy-card">
+                        <h5>Review your order and address details to avoid cancellations</h5>
+                        <p><strong>Note:</strong> Orders once placed cannot be cancelled for a full refund.</p>
+                        <a href="#" class="policy-link">Read policy</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        function selectAddress(label, text, eta) {
+            document.getElementById('address-selection-view').classList.add('hidden');
+            document.getElementById('address-selected-view').classList.remove('hidden');
+            
+            document.getElementById('selected-addr-label').innerText = label;
+            document.getElementById('selected-addr-text').innerText = text;
+            document.getElementById('selected-addr-eta').innerText = eta;
+
+            document.getElementById('payment-locked-view').classList.add('hidden');
+            document.getElementById('payment-unlocked-view').classList.remove('hidden');
+            document.getElementById('payment-step').classList.add('active');
+        }
+
+        function resetAddressSelection() {
+            document.getElementById('address-selected-view').classList.add('hidden');
+            document.getElementById('address-selection-view').classList.remove('hidden');
+
+            document.getElementById('payment-unlocked-view').classList.add('hidden');
+            document.getElementById('payment-locked-view').classList.remove('hidden');
+            document.getElementById('payment-step').classList.remove('active');
+        }
+
+        function updateDbQuantity(cartItemId, change) {
+            fetch('/customer/api/cart/update-qty', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cart_item_id: cartItemId, change: change })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            });
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('couponCodeInput').value;
+            fetch('/customer/api/cart/apply-coupon', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ coupon_code: code })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const b = data.bill;
+                    document.getElementById('lblItemTotal').innerText = `₹${b.item_total.toFixed(2)}`;
+                    document.getElementById('lblDeliveryFee').innerText = `₹${b.delivery_fee.toFixed(2)}`;
+                    document.getElementById('lblGst').innerText = `₹${b.gst_charges.toFixed(2)}`;
+                    document.getElementById('lblToPay').innerText = `₹${b.to_pay.toFixed(2)}`;
+                    
+                    const discountRow = document.getElementById('discountRow');
+                    if (b.discount > 0) {
+                        discountRow.classList.remove('hidden');
+                        document.getElementById('lblDiscount').innerText = `- ₹${b.discount.toFixed(2)}`;
+                    } else {
+                        discountRow.classList.add('hidden');
+                    }
+                } else {
+                    alert(data.message || "Invalid coupon code.");
+                }
+            });
+        }
+    
+    </script>
+
+    <!-- Slide-in Add Address Drawer -->
+<div id="addressDrawerOverlay" class="drawer-overlay hidden">
+    <div class="address-drawer">
+        <div class="drawer-header">
+            <h3>Save delivery address</h3>
+            <button class="drawer-close-btn" onclick="closeAddressDrawer()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <form id="addressForm" onsubmit="saveNewAddress(event)">
+            <div class="drawer-body">
+                <div class="form-group">
+                    <label>Street / Flat / House No. / Building</label>
+                    <input type="text" id="inputFlat" placeholder="e.g. Flat 302, Sunrise Apartments" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Area / Sector / Locality</label>
+                    <input type="text" id="inputArea" placeholder="e.g. MG Road, Near City Mall" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Landmark (Optional)</label>
+                    <input type="text" id="inputLandmark" placeholder="e.g. Opposite HDFC Bank">
+                </div>
+
+                <div class="form-group">
+                    <label>Save address as</label>
+                    <div class="address-type-selector">
+                        <button type="button" class="type-btn active" onclick="setAddrType('Home', this)"><i class="fa-solid fa-house"></i> Home</button>
+                        <button type="button" class="type-btn" onclick="setAddrType('Work', this)"><i class="fa-solid fa-briefcase"></i> Work</button>
+                        <button type="button" class="type-btn" onclick="setAddrType('Other', this)"><i class="fa-solid fa-location-dot"></i> Other</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drawer-footer">
+                <button type="submit" class="btn-save-address">SAVE ADDRESS & PROCEED</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let selectedAddrType = 'Home';
+
+    function openAddressDrawer() {
+        document.getElementById('addressDrawerOverlay').classList.remove('hidden');
+    }
+
+    function closeAddressDrawer() {
+        document.getElementById('addressDrawerOverlay').classList.add('hidden');
+    }
+
+    function setAddrType(type, btn) {
+        selectedAddrType = type;
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function saveNewAddress(e) {
+        e.preventDefault();
+        const flat = document.getElementById('inputFlat').value.trim();
+        const area = document.getElementById('inputArea').value.trim();
+        const landmark = document.getElementById('inputLandmark').value.trim();
+
+        const fullAddr = [flat, area, landmark].filter(Boolean).join(', ');
+
+        fetch('/customer/api/address/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address: fullAddr })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeAddressDrawer();
+                selectAddress(selectedAddrType, fullAddr, '35 MINS');
+            } else {
+                alert(data.message || 'Could not save address.');
+            }
+        });
+    }
+const RAZORPAY_KEY_ID = "rzp_test_TejBJvdhGb48v0";
+
+function getCouponCode() {
+    const input = document.getElementById('couponCodeInput');
+    return input ? input.value.trim() : '';
+}
+
+function payWithCOD() {
+    const couponCode = getCouponCode();
+
+    fetch('/customer/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            paymentMethod: 'cod',
+            deliveryType: 'delivery',
+            coupon_code: couponCode
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Order placed successfully via Cash on Delivery!');
+            window.location.href = '/customer/orders';
+        } else {
+            alert(data.message || 'Failed to place order.');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('An error occurred during checkout.');
+    });
+}
+
+function payWithRazorpay() {
+    const couponCode = getCouponCode();
+
+    fetch('/customer/api/checkout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            paymentMethod: 'online',
+            deliveryType: 'delivery',
+            coupon_code: couponCode
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success || !data.order) {
+            alert(data.message || 'Could not place the order.');
+            return;
+        }
+
+        sessionStorage.setItem(
+            'active_order_id',
+            data.order.id
+        );
+
+        window.location.href = '/customer/payment';
+    })
+    .catch(err => {
+        console.error('Online checkout error:', err);
+        alert('An error occurred while starting online payment.');
+    });
+}
+
+function verifyRazorpayPayment(paymentResponse, couponCode) {
+    fetch('/customer/api/checkout/razorpay/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            razorpay_order_id: paymentResponse.razorpay_order_id,
+            razorpay_payment_id: paymentResponse.razorpay_payment_id,
+            razorpay_signature: paymentResponse.razorpay_signature,
+            coupon_code: couponCode
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Payment successful! Your order has been placed.');
+            window.location.href = '/customer/orders';
+        } else {
+            alert(data.message || 'Payment verification failed.');
+        }
+    })
+    .catch(err => alert('An error occurred during verification.'));
+}
+</script>
+</body>
+</html>

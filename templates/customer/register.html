@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalBites — Create your customer account to discover local food near you.">
+    <meta name="theme-color" content="#FF6B35">
+    <title>LocalBites — Create Customer Account</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body class="page-shell auth-page" data-page="customer-register">
+
+    <div class="blob blob-tr"></div>
+    <div class="blob blob-bl"></div>
+
+    <header class="auth-topbar">
+        <button class="back-btn" id="globalBack" data-dest="/customer/login" aria-label="Go back">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="auth-logo-block">
+            <img src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="LocalBites" class="logo-img logo-img-md"
+                 onerror="this.style.display='none'; document.getElementById('regTopFb').style.display='flex';">
+            <div id="regTopFb" style="display:none; width:56px; height:56px; position:relative;" aria-hidden="true">
+                <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                    <defs><radialGradient id="pinG_cr" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FF8C5A"/><stop offset="100%" stop-color="#E55A25"/></radialGradient></defs>
+                    <path d="M100 12 C65 12 37 40 37 75 C37 120 100 208 100 208 C100 208 163 120 163 75 C163 40 135 12 100 12Z" fill="url(#pinG_cr)" opacity=".96"/>
+                    <circle cx="100" cy="74" r="34" fill="white" opacity=".96"/>
+                    <path d="M80 74 Q80 92 100 92 Q120 92 120 74" stroke="#FF6B35" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                    <line x1="80" y1="74" x2="120" y2="74" stroke="#FF6B35" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M91 63 Q88 55 91 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                    <path d="M100 60 Q97 52 100 44" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                    <path d="M109 63 Q106 55 109 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="wordmark wordmark-md"><span class="l">Local</span><span class="b">Bites</span></div>
+        </div>
+    </header>
+
+    <main class="auth-main flex flex-col items-center">
+        <div class="auth-card relative">
+
+            <!-- =====================================================
+                 SCREEN 1 — ENTER EMAIL
+            ===================================================== -->
+            <div class="auth-screen active" id="scr-reg-email">
+                <div class="step-dots">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+
+                <div class="mb-6">
+                    <h1 class="scr-title">Create Account ✨</h1>
+                    <p class="scr-sub">Enter your email address to get started</p>
+                </div>
+
+                <form id="regEmailForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="regEmail">Email Address</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </span>
+                            <input type="email" id="regEmail" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full mt-2">
+                        <span class="btn-label">Send OTP</span>
+                    </button>
+                </form>
+
+                <p class="text-center mt-5" style="font-size:var(--fs-13); color:var(--clr-text-3);">
+                    Already have an account?
+                    <button type="button" class="link-btn" onclick="LB.navigate('/customer/login')">Sign In</button>
+                </p>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 2 — OTP VERIFICATION
+            ===================================================== -->
+            <div class="auth-screen" id="scr-reg-otp">
+                <button type="button" class="scr-back-btn" id="regOtpBack">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div class="step-dots">
+                    <div class="step-dot done"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div class="mb-5">
+                    <h2 class="scr-title">Verify Email ✉️</h2>
+                    <p class="scr-sub">We sent a 6-digit code to<br><strong id="regOtpEmail">your email</strong></p>
+                </div>
+                <div class="otp-meta">
+                    <div class="timer-badge">
+                        <div class="timer-icon">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <span class="timer-count" id="regTimer">01:00</span>
+                    </div>
+                    <button type="button" class="resend-btn" id="regResend" disabled>Resend OTP</button>
+                </div>
+                <div class="otp-wrap" id="regOtpWrap" role="group" aria-label="One-time password">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+                </div>
+                <button type="button" class="btn btn-primary btn-full" id="regVerifyBtn">
+                    <span class="btn-label">Verify &amp; Continue</span>
+                </button>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 3 — CREATE ACCOUNT DETAILS
+            ===================================================== -->
+            <div class="auth-screen" id="scr-reg-details">
+                <button type="button" class="scr-back-btn" id="regDetailsBack">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div class="step-dots">
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div class="mb-6">
+                    <h2 class="scr-title">Set Up Account 🎉</h2>
+                    <p class="scr-sub">Enter your details and choose a username &amp; password</p>
+                </div>
+                <form id="regDetailsForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="regFullName">Full Name</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </span>
+                            <input type="text" id="regFullName" class="form-input" placeholder="e.g. Aarav Sharma" autocomplete="name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regPhone">Mobile Number</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </span>
+                            <input type="tel" id="regPhone" class="form-input" placeholder="e.g. +91 98765 43210" autocomplete="tel" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regUsername">Create Username</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </span>
+                            <input type="text" id="regUsername" class="form-input" placeholder="e.g. foodlover_92" autocomplete="username" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regPassword">Password</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </span>
+                            <input type="password" id="regPassword" class="form-input form-input-pw" placeholder="Min. 8 characters" autocomplete="new-password" required>
+                            <button type="button" class="pw-toggle" aria-label="Toggle">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regConfirmPw">Confirm Password</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </span>
+                            <input type="password" id="regConfirmPw" class="form-input form-input-pw" placeholder="Repeat your password" autocomplete="new-password" required>
+                            <button type="button" class="pw-toggle" aria-label="Toggle">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full mt-2">
+                        <span class="btn-label">Create Account</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 4 — REGISTRATION SUCCESS
+            ===================================================== -->
+            <div class="auth-screen" id="scr-reg-success">
+                <div class="step-dots mb-4">
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot active"></div>
+                </div>
+                <div class="success-wrap">
+                    <div class="success-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <h2 class="success-title">Account Created! 🎊</h2>
+                    <p class="success-desc">
+                        Welcome to LocalBites! Your account has been successfully created.
+                        You're all set to discover amazing local food near you.
+                    </p>
+                    <button type="button" class="btn btn-primary" id="regReturnLogin">
+                        <span class="btn-label">Go to Login</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+</body>
+</html>

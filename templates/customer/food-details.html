@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalBites — Explore delicious local dishes, tiffins, and meals from trusted food providers.">
+    <meta name="theme-color" content="#FF6B35">
+    <title>LocalBites — {{ business.business_name if business else 'Food Provider Details' }}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/food-details.css') }}">
+</head>
+<body class="page-shell" data-page="food-details">
+
+    <!-- ── TOP NAVIGATION ── -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <button class="back-btn" id="globalBack" data-dest="/customer/dashboard" aria-label="Go back">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="wordmark wordmark-md" style="margin-left: 54px;">
+                <span class="l">Local</span><span class="b">Bites</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="nav-icon-btn cart-btn-top" id="btnCartTop" aria-label="View Cart" onclick="window.location.href='/customer/cart';">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span class="nav-cart-count hidden" id="lblNavCartCount">0</span>
+            </button>
+            <button class="nav-icon-btn share-btn-top" id="btnShareTop" aria-label="Share Provider">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2.2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            </button>
+            <button class="nav-icon-btn fav-btn-top" id="btnFavTop" aria-label="Add to Favorites">
+                <svg viewBox="0 0 24 24" width="20" height="20" class="heart-svg" stroke="currentColor" fill="none" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Ambient Blobs -->
+    <div class="blob blob-tr"></div>
+    <div class="blob blob-bl"></div>
+
+    <!-- ── SECTION 1: BUSINESS HEADER ── -->
+<!-- ── LOCALBITES RESTORED HEADER SECTION ── -->
+<div class="biz-header-section" style="padding: 16px 0; border-bottom: 1px solid var(--clr-border-1, #eee);">
+    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+        <span class="badge" id="lblBizType" style="font-size: 12px; font-weight: 600; color: var(--clr-primary, #ff6b35); background: rgba(255,107,53,0.1); padding: 4px 10px; border-radius: 12px;">Home Kitchen</span>
+        <span id="lblBizStatus" style="font-size: 12px; font-weight: 600; color: #2e7d32; background: #e8f5e9; padding: 4px 10px; border-radius: 12px;">Open Now</span>
+    </div>
+
+    <h1 id="lblBizName" style="font-size: 26px; font-weight: 800; color: var(--clr-text-1, #111); margin: 6px 0;">{{ business.business_name }}</h1>
+    <p id="lblBizAddress" style="font-size: 14px; color: var(--clr-text-2, #666); margin-bottom: 10px;">Address not available</p>
+
+    <div style="display: flex; gap: 12px; font-size: 13px; color: var(--clr-text-2, #555); align-items: center; flex-wrap: wrap;">
+        <span id="lblBizRating" style="font-weight: 700; color: #f59e0b;">★ New</span>
+        <span>•</span>
+        <span id="lblBizReviews">0 Reviews</span>
+        <span>•</span>
+        <span>Time: <strong id="lblBizTime">—</strong></span>
+        <span>•</span>
+        <span>Items: <strong id="lblBizDistance">0</strong></span>
+    </div>
+</div>
+
+    <!-- ── MAIN CONTENT CONTAINER ── -->
+    <main class="food-details-container">
+        
+        <!-- ── SECTION 2: STICKY SEARCH BAR & FILTER ── -->
+        <div class="sticky-search-container">
+            <div class="search-wrapper">
+                <span class="search-btn-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+                <input type="text" id="menuSearchInput" class="search-bar-input" placeholder="Search delicious dishes in this menu...">
+                <button type="button" class="clear-search-btn hidden" id="btnClearMenuSearch" aria-label="Clear Search">✕</button>
+            </div>
+            
+            <!-- ── SECTION 3: FOOD CATEGORIES CHIPS ── -->
+            <div class="category-chips-wrapper">
+                <div class="category-chips-scroll" id="categoryChips">
+                    <button class="chip active" data-category="all">All</button>
+                    <button class="chip" data-category="mess">Mess Specials</button>
+                    <button class="chip" data-category="tiffin">Tiffins</button>
+                    <button class="chip" data-category="meals">Meals & Combos</button>
+                    <button class="chip" data-category="extras">Sides & Extras</button>
+                    <button class="chip" data-category="sweets">Sweets & Desserts</button>
+                    <button class="chip" data-diet="veg">🟢 Veg Only</button>
+                    <button class="chip" data-diet="nonveg">🔴 Non-Veg Only</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SECTION 10: RECOMMENDED FOOD SLIDER ── -->
+        <section class="menu-section recommended-slider-section">
+            <h2 class="section-title">Most Ordered & Loved 🔥</h2>
+            <div class="h-scroll" id="recommendedFoodSlider">
+                <!-- Dynamic loading placeholders / cards -->
+            </div>
+        </section>
+
+        <!-- ── SECTION 4: FOOD MENU ── -->
+        <section class="menu-section main-menu-section">
+            <h2 class="section-title" id="menuTitle">Food Menu</h2>
+            <div class="menu-grid" id="menuGrid">
+                <!-- Dynamic cards populated by JS -->
+            </div>
+            
+            <!-- ── SECTION 11: EMPTY STATES ── -->
+            <div class="empty-state-wrapper hidden" id="menuEmptyState">
+                <div class="empty-icon">🍽️</div>
+                <h3 class="empty-title">No Menu Items Found</h3>
+                <p class="empty-desc">We couldn't find any dishes matching your filters or search. Try clear search or select another chip.</p>
+                <button type="button" class="btn btn-primary btn-sm" id="btnResetFilters">Reset Filters</button>
+            </div>
+        </section>
+
+        <!-- ── SECTION 8: CUSTOMER REVIEWS ── -->
+        <section class="menu-section reviews-section">
+            <div class="section-header">
+                <h2 class="section-title">Customer Reviews &amp; Ratings</h2>
+                <div class="reviews-summary-pill" id="foodReviewsSummaryPill">
+                    ⭐ New · No reviews yet
+                </div>
+            </div>
+            <div class="reviews-grid" id="reviewsContainer">
+                <!-- Review cards dynamic -->
+            </div>
+            <div class="empty-state-wrapper hidden" id="reviewsEmptyState">
+                <div class="empty-icon">📝</div>
+                <h3 class="empty-title">No Reviews Yet</h3>
+                <p class="empty-desc">Be the first to order and leave a review for this food provider!</p>
+            </div>
+        </section>
+
+        <!-- ── SECTION 9: BUSINESS INFORMATION ── -->
+        
+        <!-- ── BUSINESS INFORMATION & CONTACT SECTION ── -->
+<!-- ── LOCALBITES RESTORED INFO SECTION ── -->
+<section class="info-section" style="margin-top: 32px; padding: 20px; background: var(--clr-surface, #f9f9f9); border-radius: 12px; border: 1px solid var(--clr-border-1, #eee);">
+    <h2 class="section-title" style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">Business Information</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div>
+            <h4 style="font-size: 14px; font-weight: 700; color: var(--clr-text-1, #333); margin-bottom: 6px;">Operating Hours</h4>
+            <p id="lblBizHoursFull" style="font-size: 13px; color: var(--clr-text-2, #666); margin-bottom: 16px;">Open: {{ business.opening_time }} to {{ business.closing_time }}</p>
+
+            <h4 id="lblBizAboutHeading" style="font-size: 14px; font-weight: 700; color: var(--clr-text-1, #333); margin-bottom: 6px;">Description</h4>
+            <p id="lblBizDesc" style="font-size: 13px; color: var(--clr-text-2, #666);">{{ business.description }}</p>
+        </div>
+
+        <div style="background: #fff; padding: 16px; border-radius: 8px; border: 1px solid var(--clr-border-1, #e0e0e0);">
+            <h4 style="font-size: 14px; font-weight: 700; color: var(--clr-primary, #ff6b35); margin-bottom: 10px;">Contact Details</h4>
+            <p style="font-size: 13px; margin-bottom: 6px;"><strong>Phone:</strong> <span>{{ business.phone }}</span></p>
+            <p style="font-size: 13px; margin: 0;"><strong>Email:</strong> <span>{{ business.email }}</span></p>
+        </div>
+        <div style="background: #fff; padding: 16px; border-radius: 8px; border: 1px solid var(--clr-border-1, #e0e0e0);">
+           <h4 style="font-size: 14px; font-weight: 700; color: var(--clr-primary, #ff6b35); margin-bottom: 10px;">Location Details</h4>
+           <p style="font-size: 13px; margin-bottom: 6px;"><strong>City:</strong> <span> {{ business.city }}</span></p>
+           <p style="font-size: 13px; margin-bottom: 6px;"><strong>Pincode:</strong> <span>{{ business.pincode }}</span></p>
+ 
+        </div>
+    </div>
+</section>
+
+        <!-- Right Column: Contact Details -->
+        <div class="col-md-5">
+            <div class="card p-3 border-0 bg-light">
+                <h5 class="text-primary">Contact Details</h5>
+                <p class="mb-1">
+                    <strong>Mobile:</strong> 
+                    <span id="lblContactPhone">{{ business.phone or business.mobile or 'N/A' }}</span>
+                </p>
+                <p class="mb-0">
+                    <strong>Email:</strong> 
+                    <span id="lblContactEmail">{{ business.email or 'N/A' }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- ── SECTION 5: FOOD DETAILS MODAL ── -->
+    <div class="modal-overlay" id="foodDetailsModal">
+        <div class="modal-container food-modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalFoodName">Dish Details</h2>
+                <button type="button" class="modal-close" onclick="LB.closeModal('foodDetailsModal')" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body food-modal-body">
+                <div class="modal-img-wrap">
+                    <img id="modalFoodImg" src="{{ url_for('static', filename='images/food/indian_thali_meal.png') }}" alt="Dish Image" onerror="this.src='{{ url_for('static', filename='images/food/indian_thali_meal.png') }}';">
+                    <span class="modal-diet-badge" id="modalFoodDiet">Veg</span>
+                </div>
+                <div class="modal-food-info">
+                    <div class="modal-meta-row">
+                        <span class="modal-price" id="modalFoodPrice">₹120</span>
+                        <span class="modal-prep" id="modalFoodPrep">⏱ 20 Mins Prep</span>
+                    </div>
+                    <div class="modal-rating-row">
+                        <span class="stars-filled">⭐⭐⭐⭐⭐</span>
+                        <span id="modalFoodRating">4.7 (50+ ratings)</span>
+                    </div>
+                    <div class="modal-desc-section">
+                        <h4>Description</h4>
+                        <p id="modalFoodDesc">Homely prepared fresh meals including items like paneer subji, soft rotis, dal, and basmati rice.</p>
+                    </div>
+                    <div class="modal-desc-section">
+                        <h4>Ingredients</h4>
+                        <p id="modalFoodIngredients">Fresh farm cottage cheese, whole wheat flour, organic ghee, basmati rice, lentils.</p>
+                    </div>
+
+                    <div class="modal-add-action-bar">
+                        <div class="qty-control-wrapper">
+                            <span class="qty-label">Quantity</span>
+                            <div class="qty-selector-btn">
+                                <button type="button" class="qty-btn" id="btnModalDec">-</button>
+                                <span class="qty-val" id="lblModalQty">1</span>
+                                <button type="button" class="qty-btn" id="btnModalInc">+</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btnModalAddToCart">
+                            Add to Cart — <span id="lblModalTotal">₹120</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 7: CART SIDEBAR / DRAWER ── -->
+    <div class="cart-sidebar-overlay" id="cartSidebarOverlay">
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-sidebar-header">
+                <h2>Your Food Cart 🛒</h2>
+                <button type="button" class="cart-close-btn" id="btnCartClose" aria-label="Close Cart">✕</button>
+            </div>
+            
+            <div class="cart-items-container" id="cartItemsList">
+                <!-- Cart items populated by JS -->
+            </div>
+
+            <!-- Empty State inside cart -->
+            <div class="cart-empty-state text-center" id="cartEmptyState">
+                <div style="font-size: 3rem; margin-bottom: 12px;">🛒</div>
+                <h4>Your Cart is Empty</h4>
+                <p>Add some delicious meals from the menu to start your order!</p>
+            </div>
+
+            <div class="cart-summary-section" id="cartSummarySection">
+                <div class="fulfillment-option-group">
+                    <label class="fulfillment-label">Order Type</label>
+                    <div class="fulfillment-pills">
+                        <label class="fulfillment-pill">
+                            <input type="radio" name="deliveryType" value="delivery" checked> Delivery
+                        </label>
+                        <label class="fulfillment-pill">
+                            <input type="radio" name="deliveryType" value="pickup"> Self Pickup
+                        </label>
+                    </div>
+                </div>
+                <div class="fulfillment-option-group">
+                    <label class="fulfillment-label">Payment Method</label>
+                    <div class="fulfillment-pills">
+                        <label class="fulfillment-pill">
+                            <input type="radio" name="paymentMethod" value="online" checked> Pay Online
+                        </label>
+                        <label class="fulfillment-pill">
+                            <input type="radio" name="paymentMethod" value="cod"> Cash on Delivery
+                        </label>
+                    </div>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total</span>
+                    <span id="lblCartTotal">₹0</span>
+                </div>
+                <button type="button" class="btn btn-primary btn-full checkout-btn" id="btnCartCheckout">
+                    Continue to Payment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 7: FLOATING CART BUTTON ── -->
+    <button type="button" class="floating-cart-badge hidden" id="btnFloatingCart">
+        <div class="float-cart-left">
+            <span class="float-cart-count" id="lblFloatCount">0 Items</span>
+            <span class="float-cart-divider">|</span>
+            <span class="float-cart-price" id="lblFloatPrice">₹0</span>
+        </div>
+        <div class="float-cart-right">
+            <span>View Cart ➔</span>
+        </div>
+    </button>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/food-details.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Delivery Dashboard | LocalBites</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #fafaf9; /* Warm off-white neutral background */
+            color: #222;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+       .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between logo image and text */
+}
+
+.brand-logo {
+    height: 40px; /* Adjust height to fit your header nicely */
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-title {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+}
+
+.brand-local {
+    color: #451a03; /* Rich dark brown color for Local */
+}
+
+.brand-bites {
+    color: #f97316; /* Vibrant orange color for Bites */
+}
+
+        /* Enhanced Role / Profile Badge */
+        .role-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: #c2410c;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .role-badge svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* =========================================
+           WELCOME CARD - White & Orange Theme
+           ========================================= */
+        .welcome-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+            padding: 28px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+            border-left: 6px solid #f97316; /* Clean orange accent bar */
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .welcome-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(249, 115, 22, 0.1);
+        }
+
+        .welcome-card h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #1f2937;
+            font-size: 24px;
+        }
+
+        .welcome-card p {
+            color: #4b5563;
+            margin: 6px 0;
+            font-size: 15px;
+        }
+
+        .username-highlight {
+            color: #ea580c;
+            font-weight: 600;
+        }
+
+        .section-title {
+            margin-bottom: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .order-card {
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 12px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f3f4f6;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .order-id {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        /* =========================================
+           STATUS BADGES CSS
+           ========================================= */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+        
+            border-radius: 20px;
+
+            
+
+
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+        }
+
+        .status-badge.delivered {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.out-for-delivery {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.pending {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .detail {
+            margin: 9px 0;
+            line-height: 1.5;
+            color: #4b5563;
+        }
+
+        .detail strong {
+            display: inline-block;
+            width: 120px;
+            color: #374151;
+        }
+
+        .empty {
+            background: white;
+
+            padding: 40px;
+
+            text-align: center;
+
+            border-radius: 12px;
+            color: #6b7280;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        /* GPS BUTTON */
+
+        .gps-btn {
+            margin-top: 15px;
+
+            padding: 10px 18px;
+
+            border: none;
+            border-radius: 8px;
+            background: #f97316;
+            color: white;
+
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .gps-btn:hover {
+            background: #ea580c;
+        }
+
+        .gps-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .gps-status {
+            margin-top: 10px;
+
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 15px 18px;
+            }
+
+            .container {
+                margin-top: 20px;
+                padding: 0 15px;
+            }
+
+            .order-header {
+                align-items: flex-start;
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            .detail strong {
+                width: 100px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="logo">
+          <img src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="LocalBites Logo" class="brand-logo">
+          <div class="brand-title">
+           <span class="brand-local">Local</span><span class="brand-bites">Bites</span>
+           </div>
+        </div>
+        <div class="role-badge">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            Delivery Partner
+        </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+
+    <main class="container">
+
+
+        <!-- WELCOME -->
+
+        <div class="welcome-card">
+
+            <h2>
+                Welcome, {{ delivery_person.name }}
+
+            </h2>
+
+            <p>
+                Username: <span class="username-highlight">{{ delivery_person.username }}</span>
+
+            </p>
+
+            <p>
+                Your assigned deliveries will appear below.
+
+            </p>
+
+        </div>
+
+
+        <!-- ORDERS -->
+
+        <h2 class="section-title">
+            My Deliveries
+        </h2>
+
+
+        <div id="ordersContainer">
+
+            <div class="empty">
+                Loading your deliveries...
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+
+        // ============================================================
+        // GPS WATCHERS
+        // ============================================================
+
+        const gpsWatchers = {};
+
+
+        // ============================================================
+        // UPDATE GPS STATUS
+        // ============================================================
+        function updateGPSStatus(orderId, message) {
+            const status = document.querySelector(`.gps-status[data-order-id="${orderId}"]`);
+            if (status) {
+                status.textContent = message;
+            }
+
+        }
+
+
+        // ============================================================
+        // SEND GPS LOCATION TO FLASK
+        // ============================================================
+        async function sendLocation(orderId, position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+            console.log("GPS Location:", latitude, longitude, accuracy);
+            updateGPSStatus(orderId, "Sending location...");
+
+            try {
+                const response = await fetch(`/delivery/api/orders/${orderId}/location`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude,
+                        accuracy: accuracy
+                    })
+                });
+
+                const data = await response.json();
+                console.log("Location API response:", data);
+
+                if (!response.ok || !data.success) {
+                    updateGPSStatus(orderId, data.message || "Could not update location.");
+                    return;
+                }
+
+                updateGPSStatus(orderId, "📍 Location sharing is active.");
+
+            } catch (error) {
+                console.error("Error sending location:", error);
+                updateGPSStatus(orderId, "Could not send location.");
+            }
+
+        }
+
+
+        // ============================================================
+        // GPS ERROR
+        // ============================================================
+        function handleGPSError(orderId, error) {
+            console.error("GPS error:", error);
+            let message = "Unable to get your location.";
+
+            if (error.code === 1) {
+                message = "Location permission was denied.";
+            } else if (error.code === 2) {
+                message = "Location is unavailable.";
+            } else if (error.code === 3) {
+                message = "Location request timed out.";
+            }
+
+
+            updateGPSStatus(orderId, message);
+        }
+
+
+        // ============================================================
+        // START LOCATION SHARING
+        // ============================================================
+        function startLocationSharing(orderId, button) {
+            if (!navigator.geolocation) {
+                updateGPSStatus(orderId, "GPS is not supported by this browser.");
+                return;
+            }
+
+
+            button.disabled = true;
+            button.textContent = "📍 Location Sharing Active";
+
+            updateGPSStatus(orderId, "Requesting your location...");
+
+            const watchId = navigator.geolocation.watchPosition(
+                position => {
+                    sendLocation(orderId, position);
+                },
+                error => {
+                    handleGPSError(orderId, error);
+                    button.disabled = false;
+                    button.textContent = "📍 Start Location Sharing";
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 5000,
+                    timeout: 10000
+                }
+            );
+
+            gpsWatchers[orderId] = watchId;
+            console.log("GPS watcher started:", orderId, watchId);
+        }
+
+
+        // ============================================================
+        // LOAD ASSIGNED ORDERS
+        // ============================================================
+
+        async function loadMyOrders() {
+            const container = document.getElementById("ordersContainer");
+
+            try {
+                const response = await fetch("/delivery/api/orders");
+                const data = await response.json();
+
+                console.log("Delivery orders:", data);
+
+                if (!response.ok || !data.success) {
+                    container.innerHTML = `
+
+                        <div class="empty">
+                            ${data.message || "Could not load orders."}
+                        </div>
+
+                    `;
+
+                    return;
+                }
+
+                if (!data.orders || data.orders.length === 0) {
+                    container.innerHTML = `
+
+                        <div class="empty">
+
+                            No deliveries assigned to you yet.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+
+
+                container.innerHTML = "";
+
+
+                data.orders.forEach(order => {
+                    const card = document.createElement("div");
+                    card.className = "order-card";
+
+                    const status = String(order.status || "").replace(/_/g, " ");
+
+                    // Determine badge class based on status
+                    let badgeClass = "pending";
+                    const rawStatus = (order.status || "").toLowerCase();
+                    if (rawStatus === "delivered") {
+                        badgeClass = "delivered";
+                    } else if (rawStatus.includes("out_for_delivery") || rawStatus.includes("out for delivery")) {
+                        badgeClass = "out-for-delivery";
+                    }
+
+                    let gpsHTML = "";
+                    if (order.status === "out_for_delivery") {
+                        gpsHTML = `
+                            <button class="gps-btn" data-order-id="${order.id}" onclick="startLocationSharing(${order.id}, this)">
+                                📍 Start Location Sharing
+
+                            </button>
+                            <div class="gps-status" data-order-id="${order.id}">
+
+                                Location sharing is not started.
+
+                            </div>
+
+                        `;
+
+                    }
+
+
+                    card.innerHTML = `
+
+                        <div class="order-header">
+
+                            <div class="order-id">
+
+                                Order #${order.id}
+
+                            </div>
+
+
+                            <div class="status">
+
+                                <span class="status-badge ${badgeClass}">${status}</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail">
+                            <strong>Customer:</strong> ${order.customer || "Customer"}
+                        </div>
+
+
+                        <div class="detail">
+                            <strong>Address:</strong> ${order.address || "Address unavailable"}
+                        </div>
+
+
+                        <div class="detail">
+                            <strong>Amount:</strong> ₹${order.amount || 0}
+                        </div>
+
+
+                        <div class="detail">
+                            <strong>Payment:</strong> ${order.paymentMethod || "N/A"}
+                        </div>
+
+
+                        ${gpsHTML}
+
+                    `;
+
+
+                    container.appendChild(card);
+
+                });
+
+
+            } catch (error) {
+                console.error("Error loading deliveries:", error);
+
+                container.innerHTML = 
+                `
+                    <div class="empty">
+
+                        Something went wrong while loading deliveries.
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        // ============================================================
+        // LOAD ORDERS ON STARTUP
+        // ============================================================
+
+        loadMyOrders();
+
+    </script>
+
+</body>
+
+</html>

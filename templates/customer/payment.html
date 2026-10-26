@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6B35">
+    <title>LocalBites — Payment</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+
+    <style>
+        .payment-shell {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: var(--sp-5) var(--sp-4) 120px;
+        }
+        .payment-card {
+            background: var(--clr-bg);
+            border: 1.5px solid var(--clr-border);
+            border-radius: var(--r-lg);
+            padding: var(--sp-5);
+            margin-bottom: var(--sp-4);
+        }
+        .payment-order-item-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--fs-14);
+            color: var(--clr-text-2);
+            padding: 6px 0;
+        }
+        .payment-total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--fs-16);
+            font-weight: 800;
+            color: var(--clr-text-1);
+            padding-top: var(--sp-3);
+            margin-top: var(--sp-3);
+            border-top: 1.5px dashed var(--clr-border-2);
+        }
+        .payment-status-banner {
+            text-align: center;
+            padding: var(--sp-6) var(--sp-4);
+        }
+        .payment-status-banner .icon { font-size: 3.5rem; margin-bottom: var(--sp-3); }
+        .payment-method-note {
+            font-size: var(--fs-13);
+            color: var(--clr-text-3);
+            margin-top: var(--sp-2);
+        }
+    </style>
+</head>
+<body class="page-shell" data-page="payment">
+
+    <nav class="top-nav">
+        <div class="nav-left">
+            <button class="back-btn" id="globalBack" data-dest="/customer/dashboard" aria-label="Go back">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="wordmark wordmark-md" style="margin-left: 54px;">
+                <span class="l">Local</span><span class="b">Bites</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="payment-shell">
+        <h1 style="font-size: var(--fs-20); font-weight: 800; margin: var(--sp-4) 0;">Complete Your Order</h1>
+
+        <div id="paymentLoadingState" class="payment-status-banner">
+            <div class="icon">⏳</div>
+            <p>Loading your order...</p>
+        </div>
+
+        <div id="paymentContent" class="hidden">
+            <div class="payment-card">
+                <h3 style="margin-bottom: var(--sp-3);">Order Summary</h3>
+                <p style="font-weight: 700; margin-bottom: var(--sp-2);" id="lblPayBusinessName"></p>
+                <div id="paymentItemsList"></div>
+                <div class="payment-total-row">
+                    <span>Total</span>
+                    <span id="lblPayTotal"></span>
+                </div>
+            </div>
+
+            <div class="payment-card" id="onlinePaymentCard">
+                <h3 style="margin-bottom: var(--sp-2);">Pay Online</h3>
+                <p class="payment-method-note">Secured by Razorpay — supports UPI, cards, netbanking, and wallets.</p>
+                <button type="button" class="btn btn-primary btn-full mt-4" id="btnPayNow">
+                    Pay Now
+                </button>
+            </div>
+
+            <div class="payment-card hidden" id="codPaymentCard">
+                <h3 style="margin-bottom: var(--sp-2);">Cash on Delivery</h3>
+                <p class="payment-method-note">Pay in cash when your order arrives (or when you pick it up).</p>
+                <button type="button" class="btn btn-primary btn-full mt-4" id="btnConfirmCod">
+                    Confirm Order
+                </button>
+            </div>
+        </div>
+
+        <div id="paymentSuccessState" class="payment-status-banner hidden">
+            <div class="icon">🎉</div>
+            <h2>Order Confirmed!</h2>
+            <p id="lblSuccessMessage" style="color: var(--clr-text-3); margin: var(--sp-2) 0 var(--sp-4);"></p>
+            <button type="button" class="btn btn-primary" onclick="LB.navigate('/customer/dashboard')">
+                Back to Dashboard
+            </button>
+        </div>
+
+        <div id="paymentErrorState" class="payment-status-banner hidden">
+            <div class="icon">⚠️</div>
+            <h2>Couldn't Load Order</h2>
+            <p id="lblErrorMessage" style="color: var(--clr-text-3); margin: var(--sp-2) 0 var(--sp-4);"></p>
+            <button type="button" class="btn btn-secondary" onclick="LB.navigate('/customer/dashboard')">
+                Back to Dashboard
+            </button>
+        </div>
+    </main>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Razorpay's official Checkout script — only actually opens a
+         payment sheet if RAZORPAY_KEY_ID/SECRET are configured on the
+         server (see the "Pay Now" handler below). -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/payment.js') }}"></script>
+</body>
+</html>

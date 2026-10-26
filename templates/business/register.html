@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalBites — Register your food business and reach thousands of local customers.">
+    <meta name="theme-color" content="#2E7D32">
+    <title>LocalBites — Register Your Business</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+    <style>
+        .auth-card::before {
+            background: linear-gradient(90deg, #2E7D32, #4CAF50, #FF6B35);
+        }
+        #bizRegContinue { background: linear-gradient(135deg, #2E7D32, #1B5E20); box-shadow: var(--sh-secondary); }
+        #bizRegContinue:hover { background: linear-gradient(135deg, #4CAF50, #2E7D32); transform: translateY(-2px); }
+        .step-dot.active { background: var(--clr-secondary); }
+        .step-dot.done { background: var(--clr-secondary-light); }
+
+        /* ── DOCUMENT VERIFICATION STEP (Business Register) ── */
+        .doc-review-card {
+            display: flex; align-items: flex-start; gap: var(--sp-3);
+            background: linear-gradient(135deg, rgba(46,125,50,.05) 0%, rgba(46,125,50,.09) 100%);
+            border: 1px solid rgba(46,125,50,.18); border-radius: var(--r-md);
+            padding: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-5);
+        }
+        .doc-review-icon {
+            width: 32px; height: 32px; border-radius: var(--r-full);
+            background: var(--clr-secondary-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .doc-review-icon svg { width: 16px; height: 16px; stroke: var(--clr-secondary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .doc-review-text { font-size: var(--fs-12); color: var(--clr-text-3); line-height: 1.6; }
+        .doc-review-text strong { color: var(--clr-secondary); }
+
+        .doc-card {
+            background: var(--clr-surface); border: 1.5px solid var(--clr-border);
+            border-radius: var(--r-xl); padding: var(--sp-5) var(--sp-5) var(--sp-4);
+            margin-bottom: var(--sp-4); transition: border-color var(--t-base), background var(--t-base), box-shadow var(--t-base);
+        }
+        .doc-card.with-file { border-color: rgba(46,125,50,.32); background: var(--clr-secondary-bg); }
+        .doc-card-title { font-size: var(--fs-14); font-weight: 800; color: var(--clr-text-1); display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+        .doc-card-sub { font-size: var(--fs-13); color: var(--clr-text-3); line-height: 1.6; margin-bottom: var(--sp-4); }
+        .doc-upload-btn { height: 44px; font-size: var(--fs-14); }
+        .doc-hint { font-size: var(--fs-11); color: var(--clr-text-4); margin-top: var(--sp-2); font-weight: 600; }
+        .doc-file-state {
+            display: flex; align-items: center; gap: var(--sp-3);
+            background: var(--clr-bg); border: 1.5px solid rgba(46,125,50,.28);
+            border-radius: var(--r-md); padding: var(--sp-3) var(--sp-4); margin-top: var(--sp-3);
+        }
+        .doc-file-state.hidden { display: none; }
+        .doc-file-icon { font-size: var(--fs-18); flex-shrink: 0; }
+        .doc-file-meta { flex: 1; min-width: 0; }
+        .doc-file-name { display: block; font-size: var(--fs-13); font-weight: 700; color: var(--clr-text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .doc-file-status { display: block; font-size: var(--fs-12); color: var(--clr-secondary); font-weight: 600; margin-top: 2px; }
+        .doc-remove-btn { font-size: var(--fs-12); font-weight: 700; color: var(--clr-error); background: var(--clr-error-bg); border-radius: var(--r-pill); padding: var(--sp-1) var(--sp-3); flex-shrink: 0; transition: all var(--t-fast); }
+        .doc-remove-btn:hover { background: rgba(211,47,47,.15); }
+
+        /* ── PREMISES OWNED / RENTED ── */
+        .prem-section-title { font-size: var(--fs-14); font-weight: 800; color: var(--clr-text-1); margin: var(--sp-6) 0 var(--sp-2); }
+        .prem-hint { font-size: var(--fs-13); color: var(--clr-text-3); margin-bottom: var(--sp-4); }
+        .prem-options { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); margin-bottom: var(--sp-5); }
+        .prem-option {
+            display: flex; flex-direction: column; align-items: center; gap: var(--sp-2);
+            padding: var(--sp-4) var(--sp-3); border: 2px solid var(--clr-border-2);
+            border-radius: var(--r-lg); background: var(--clr-bg); transition: all var(--t-base);
+        }
+        .prem-option:hover { border-color: var(--clr-secondary); }
+        .prem-option-icon { font-size: var(--fs-22); }
+        .prem-option-label { font-size: var(--fs-13); font-weight: 700; color: var(--clr-text-3); }
+        .prem-option.active { border-color: var(--clr-secondary); background: var(--clr-secondary-bg); box-shadow: 0 0 14px rgba(46,125,50,.14); }
+        .prem-option.active .prem-option-label { color: var(--clr-secondary); }
+        .premises-doc-wrap { display: none; }
+        .premises-doc-wrap.active { display: block; animation: scrIn .3s ease both; }
+
+        .biz-docs-status { font-size: var(--fs-12); font-weight: 700; color: var(--clr-text-4); text-align: center; margin-top: var(--sp-4); }
+
+        /* ── SUCCESS CHECKLIST ── */
+        .reg-checklist { max-width: 340px; margin: var(--sp-5) auto var(--sp-6); text-align: left; display: flex; flex-direction: column; gap: var(--sp-2); }
+        .check-item { display: flex; align-items: center; gap: var(--sp-3); font-size: var(--fs-14); font-weight: 600; color: var(--clr-text-2); padding: var(--sp-2) 0; border-bottom: 1px dashed var(--clr-border); }
+        .check-item:last-child { border-bottom: none; }
+        .check-icon { width: 24px; height: 24px; border-radius: var(--r-full); display: inline-flex; align-items: center; justify-content: center; font-size: var(--fs-12); font-weight: 800; flex-shrink: 0; }
+        .check-done { background: var(--clr-secondary-bg); color: var(--clr-secondary); }
+        .check-pending { background: rgba(245,124,0,.14); color: var(--clr-warn); }
+    </style>
+</head>
+<body class="page-shell auth-page" data-page="business-register">
+
+    <div class="blob blob-tr" style="background:radial-gradient(circle,rgba(46,125,50,.07) 0%,transparent 70%);"></div>
+    <div class="blob blob-bl"></div>
+
+    <header class="auth-topbar">
+        <button class="back-btn" id="globalBack" data-dest="/business/login" aria-label="Go back">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="auth-logo-block">
+            <img src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="LocalBites" class="logo-img logo-img-md"
+                 onerror="this.style.display='none'; document.getElementById('bizRegFb').style.display='flex';">
+            <div id="bizRegFb" style="display:none; width:56px; height:56px; position:relative;" aria-hidden="true">
+                <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                    <defs><radialGradient id="pinG_br" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FF8C5A"/><stop offset="100%" stop-color="#E55A25"/></radialGradient></defs>
+                    <path d="M100 12 C65 12 37 40 37 75 C37 120 100 208 100 208 C100 208 163 120 163 75 C163 40 135 12 100 12Z" fill="url(#pinG_br)" opacity=".96"/>
+                    <circle cx="100" cy="74" r="34" fill="white" opacity=".96"/>
+                    <path d="M80 74 Q80 92 100 92 Q120 92 120 74" stroke="#FF6B35" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                    <line x1="80" y1="74" x2="120" y2="74" stroke="#FF6B35" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M91 63 Q88 55 91 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                    <path d="M100 60 Q97 52 100 44" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                    <path d="M109 63 Q106 55 109 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="wordmark wordmark-md"><span class="l">Local</span><span class="b">Bites</span></div>
+        </div>
+    </header>
+
+    <main class="auth-main flex flex-col items-center">
+        <div class="auth-card relative">
+
+            <!-- =====================================================
+                 SCREEN 1 — BUSINESS DETAILS (STEP 1)
+            ===================================================== -->
+            <div class="auth-screen active" id="scr-biz-details">
+                <div class="step-dots">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+
+                <div style="display:inline-flex; align-items:center; gap:6px;
+                            background:var(--clr-secondary-bg); border:1px solid rgba(46,125,50,.2);
+                            border-radius:var(--r-pill); padding:4px 14px;
+                            font-size:var(--fs-12); font-weight:700; color:var(--clr-secondary);
+                            margin-bottom:var(--sp-5);">
+                    🏪 Step 1 of 5
+                </div>
+
+                <div class="mb-6">
+                    <h1 class="scr-title">Register Your Business</h1>
+                    <p class="scr-sub">Tell us about your food business to get started</p>
+                </div>
+
+                <form id="bizRegForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="bizName">Business Name</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            </span>
+                            <input type="text" id="bizName" class="form-input" placeholder="e.g. Amma's Home Kitchen" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="ownerName">Owner Name</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </span>
+                            <input type="text" id="ownerName" class="form-input" placeholder="Your full name" autocomplete="name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bizEmail">Email Address</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </span>
+                            <input type="email" id="bizEmail" class="form-input" placeholder="business@example.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bizMobile">Mobile Number</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                            </span>
+                            <input type="tel" id="bizMobile" class="form-input" placeholder="+91 98765 43210" pattern="[0-9+\-\s()]{7,15}" autocomplete="tel" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                       <label for="bizAddress">Business Address / Location (e.g., Kalyan West, Ghatkopar)</label>
+                       <input type="text" id="bizAddress" name="address" class="form-control" required placeholder="Enter your area or address">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bizType">Business Type</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </span>
+                            <select id="bizType" class="form-select" required>
+                                <option value="" disabled selected style="color:var(--clr-text-4);">Select type…</option>
+                                <option value="mess">Mess</option>
+                                <option value="home_kitchen">Home Kitchen</option>
+                                <option value="tiffin_service">Tiffin Service</option>
+                                <option value="canteen">Canteen</option>
+                                <option value="poli_bhaji_kendra">Poli Bhaji Kendra</option>
+                                <option value="festival_seller">Festival Seller</option>
+                            </select>
+                            <span class="sel-arrow">
+                                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full mt-4" id="bizRegContinue">
+                        <span class="btn-label">Continue</span>
+                    </button>
+
+                    <p class="biz-reg-note mt-3">
+                        By continuing, you agree to LocalBites Terms & Privacy Policy.
+                    </p>
+                </form>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 2 — EMAIL OTP VERIFICATION (STEP 2)
+            ===================================================== -->
+            <div class="auth-screen" id="scr-biz-otp">
+                <button type="button" class="scr-back-btn" id="bizRegOtpBack">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div class="step-dots">
+                    <div class="step-dot done"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div class="mb-5">
+                    <h2 class="scr-title">Verify Email ✉️</h2>
+                    <p class="scr-sub">We sent a 6-digit code to<br><strong id="bizRegOtpEmail">your email</strong></p>
+                </div>
+                <div class="otp-meta">
+                    <div class="timer-badge">
+                        <div class="timer-icon" style="background:var(--clr-secondary-bg);">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <span class="timer-count" id="bizRegTimer" style="color:var(--clr-secondary);">01:00</span>
+                    </div>
+                    <button type="button" class="resend-btn" id="bizRegResend" disabled>Resend OTP</button>
+                </div>
+                <div class="otp-wrap" id="bizRegOtpWrap" role="group" aria-label="One-time password">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+                </div>
+                <button type="button" class="btn btn-secondary btn-full" id="bizRegVerifyBtn">
+                    <span class="btn-label">Verify & Continue</span>
+                </button>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 3 — BUSINESS & OWNER VERIFICATION (STEP 3)
+            ===================================================== -->
+            <div class="auth-screen" id="scr-biz-docs">
+                <button type="button" class="scr-back-btn" id="bizRegDocsBack">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div class="step-dots">
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div class="mb-6">
+                    <h2 class="scr-title">Business & Owner Verification 📑</h2>
+                    <p class="scr-sub">Upload documents so our Admin Team can verify your business</p>
+                </div>
+
+                <div class="doc-review-card">
+                    <div class="doc-review-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <p class="doc-review-text">
+                        Documents are reviewed by <strong>LocalBites Admin</strong> to confirm you are the authorized owner and
+                        your food business is genuine. This is a frontend prototype — no files are uploaded or stored.
+                    </p>
+                </div>
+
+                <!-- Document 1: Owner Identity Proof -->
+                <div class="doc-card" id="bizDocOwnerCard">
+                    <h3 class="doc-card-title">🪪 Owner Identity Proof</h3>
+                    <p class="doc-card-sub">
+                        Aadhaar Card or any other government-issued identity proof.
+                    </p>
+                    <input type="file" id="bizDocOwnerInput" class="hidden" accept=".jpg,.jpeg,.png,.pdf" data-doc="owner">
+                    <button type="button" class="btn btn-outline-secondary doc-upload-btn" id="bizDocOwnerBtn">
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Upload Document
+                    </button>
+                    <p class="doc-hint">Accepted: JPG, PNG, PDF · Max 5 MB</p>
+                    <div class="doc-file-state hidden" id="bizDocOwnerState">
+                        <span class="doc-file-icon">📄</span>
+                        <div class="doc-file-meta">
+                            <span class="doc-file-name" id="bizDocOwnerName">No file selected</span>
+                            <span class="doc-file-status">Document uploaded — Pending Admin Verification</span>
+                        </div>
+                        <button type="button" class="doc-remove-btn" id="bizDocOwnerRemove">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Document 2: Food Business Proof -->
+                <div class="doc-card" id="bizDocBizCard">
+                    <h3 class="doc-card-title">🏪 Food Business License / Registration</h3>
+                    <p class="doc-card-sub">
+                        FSSAI Registration/Licence or other applicable business registration document.
+                    </p>
+                    <input type="file" id="bizDocBizInput" class="hidden" accept=".jpg,.jpeg,.png,.pdf" data-doc="biz">
+                    <button type="button" class="btn btn-outline-secondary doc-upload-btn" id="bizDocBizBtn">
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Upload Document
+                    </button>
+                    <p class="doc-hint">Accepted: JPG, PNG, PDF · Max 5 MB</p>
+                    <div class="doc-file-state hidden" id="bizDocBizState">
+                        <span class="doc-file-icon">📄</span>
+                        <div class="doc-file-meta">
+                            <span class="doc-file-name" id="bizDocBizName">No file selected</span>
+                            <span class="doc-file-status">Document uploaded — Pending Admin Verification</span>
+                        </div>
+                        <button type="button" class="doc-remove-btn" id="bizDocBizRemove">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Document 3: Business Premises Proof -->
+                <h3 class="prem-section-title">🏪 Business Premises Proof</h3>
+                <p class="prem-hint">Is your business premises owned or rented?</p>
+                <div class="prem-options">
+                    <button type="button" class="prem-option" id="bizPremOwnedBtn" data-premises="owned">
+                        <span class="prem-option-icon">🏠</span>
+                        <span class="prem-option-label">Owned</span>
+                    </button>
+                    <button type="button" class="prem-option" id="bizPremRentedBtn" data-premises="rented">
+                        <span class="prem-option-icon">📋</span>
+                        <span class="prem-option-label">Rented</span>
+                    </button>
+                </div>
+
+                <!-- Owned premises document -->
+                <div class="premises-doc-wrap" id="bizPremOwnedWrap">
+                    <div class="doc-card">
+                        <h3 class="doc-card-title">🏠 Proof of Ownership</h3>
+                        <p class="doc-card-sub">
+                            Property ownership document, sale deed, property tax receipt, or other acceptable ownership proof.
+                        </p>
+                        <input type="file" id="bizDocPremOwnedInput" class="hidden" accept=".jpg,.jpeg,.png,.pdf" data-doc="premises-owned">
+                        <button type="button" class="btn btn-outline-secondary doc-upload-btn" id="bizDocPremOwnedBtn">
+                            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Upload Document
+                        </button>
+                        <p class="doc-hint">Accepted: JPG, PNG, PDF · Max 5 MB</p>
+                        <div class="doc-file-state hidden" id="bizDocPremOwnedState">
+                            <span class="doc-file-icon">📄</span>
+                            <div class="doc-file-meta">
+                                <span class="doc-file-name" id="bizDocPremOwnedName">No file selected</span>
+                                <span class="doc-file-status">Document uploaded — Pending Admin Verification</span>
+                            </div>
+                            <button type="button" class="doc-remove-btn" id="bizDocPremOwnedRemove">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rented premises document -->
+                <div class="premises-doc-wrap" id="bizPremRentedWrap">
+                    <div class="doc-card">
+                        <h3 class="doc-card-title">📋 Proof of Rental Premises</h3>
+                        <p class="doc-card-sub">
+                            Rent/Lease agreement, or Landlord/Property Owner NOC where applicable.
+                        </p>
+                        <input type="file" id="bizDocPremRentedInput" class="hidden" accept=".jpg,.jpeg,.png,.pdf" data-doc="premises-rented">
+                        <button type="button" class="btn btn-outline-secondary doc-upload-btn" id="bizDocPremRentedBtn">
+                            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Upload Document
+                        </button>
+                        <p class="doc-hint">Accepted: JPG, PNG, PDF · Max 5 MB</p>
+                        <div class="doc-file-state hidden" id="bizDocPremRentedState">
+                            <span class="doc-file-icon">📄</span>
+                            <div class="doc-file-meta">
+                                <span class="doc-file-name" id="bizDocPremRentedName">No file selected</span>
+                                <span class="doc-file-status">Document uploaded — Pending Admin Verification</span>
+                            </div>
+                            <button type="button" class="doc-remove-btn" id="bizDocPremRentedRemove">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="biz-docs-status">All documents will be reviewed by LocalBites Admin Team.</p>
+
+                <button type="button" class="btn btn-secondary btn-full mt-3" id="bizRegDocsContinue">
+                    <span class="btn-label">Continue to Account Setup</span>
+                </button>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 4 — BUSINESS ACCOUNT SETUP (STEP 4)
+            ===================================================== -->
+            <div class="auth-screen" id="scr-biz-account">
+                <button type="button" class="scr-back-btn" id="bizRegAccountBack">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div class="step-dots">
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div class="mb-6">
+                    <h2 class="scr-title">Set Up Business Account 🔐</h2>
+                    <p class="scr-sub">Choose a username and secure password</p>
+                </div>
+                <form id="bizRegAccountForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="bizRegUsername">Create Username</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </span>
+                            <input type="text" id="bizRegUsername" class="form-input" placeholder="e.g. ammas_kitchen" autocomplete="username" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="bizAccountPw">Password</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </span>
+                            <input type="password" id="bizAccountPw" class="form-input form-input-pw" placeholder="Min. 8 characters" autocomplete="new-password" required>
+                            <button type="button" class="pw-toggle" aria-label="Toggle password">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="bizConfirmPw">Confirm Password</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </span>
+                            <input type="password" id="bizConfirmPw" class="form-input form-input-pw" placeholder="Repeat your password" autocomplete="new-password" required>
+                            <button type="button" class="pw-toggle" aria-label="Toggle password">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-full mt-2" id="bizRegAccountContinue">
+                        <span class="btn-label">Complete Registration</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 5 — REGISTRATION SUBMITTED (STEP 5)
+            ===================================================== -->
+            <div class="auth-screen" id="scr-biz-success">
+                <div class="step-dots mb-4">
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot done"></div>
+                    <div class="step-dot active"></div>
+                </div>
+                <div class="success-wrap">
+                    <div class="success-icon" style="background:var(--clr-secondary-bg); border-color:var(--clr-secondary)">
+                        <svg viewBox="0 0 24 24" style="stroke:var(--clr-secondary)"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <h2 class="success-title">Registration Submitted</h2>
+                    <p class="success-desc">
+                        Your business registration has been submitted successfully and is <strong>pending Admin verification</strong>.
+                    </p>
+                    <div class="reg-checklist">
+                        <div class="check-item"><span class="check-icon check-done">✓</span> Business details submitted</div>
+                        <div class="check-item"><span class="check-icon check-done">✓</span> Email verified</div>
+                        <div class="check-item"><span class="check-icon check-done">✓</span> Verification documents submitted</div>
+                        <div class="check-item"><span class="check-icon check-pending">⏳</span> Admin verification pending</div>
+                    </div>
+                    <p class="success-desc">
+                        Once your documents are reviewed and approved by the LocalBites Admin, you will be able to access your Business Dashboard.
+                    </p>
+                    <button type="button" class="btn btn-secondary" id="bizRegReturnLogin">
+                        <span class="btn-label">Return to Login</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+</body>
+</html>

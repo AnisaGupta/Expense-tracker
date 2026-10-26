@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalBites — Choose your delivery location to discover food providers near you.">
+    <meta name="theme-color" content="#FF6B35">
+    <title>LocalBites — Welcome &amp; Location Selection</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body class="page-shell auth-page" data-page="location">
+
+    <div class="blob blob-tr"></div>
+    <div class="blob blob-bl"></div>
+
+    <main class="auth-main flex flex-col items-center" style="min-height: 100dvh; justify-content: center; padding: var(--sp-4);">
+        <div class="auth-card relative text-center" style="max-width: 460px;">
+            
+            <!-- Logo -->
+            <div class="flex flex-col items-center mb-5 mt-2">
+                <img src="{{ url_for('static', filename='images/localbites-logo.png') }}" alt="LocalBites" class="logo-img logo-img-md mb-2"
+                     onerror="this.style.display='none'; document.getElementById('locFb').style.display='flex';">
+                <div id="locFb" class="logo-icon-fb" style="display:none; width:60px; height:60px; font-size:1.6rem; margin-bottom:var(--sp-2);">🍽️</div>
+                <div class="wordmark wordmark-md"><span class="l">Local</span><span class="b">Bites</span></div>
+            </div>
+
+            <h1 class="scr-title">Welcome back! 👋</h1>
+            <p class="scr-sub" style="margin-bottom: var(--sp-6);">Let's find delicious local food near you.</p>
+
+            <!-- Location & Food Illustration (Custom Premium Inline SVG) -->
+            <div style="width: 100%; max-width: 220px; margin: 0 auto var(--sp-6); animation: floatLogo 4s ease-in-out infinite;">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="100" cy="100" r="80" fill="var(--clr-accent)" />
+                    <!-- Roads/Grid lines -->
+                    <line x1="40" y1="100" x2="160" y2="100" stroke="var(--clr-border-2)" stroke-width="4" stroke-dasharray="6 6"/>
+                    <line x1="100" y1="40" x2="100" y2="160" stroke="var(--clr-border-2)" stroke-width="4" stroke-dasharray="6 6"/>
+                    <!-- Concentric locator waves -->
+                    <circle cx="100" cy="92" r="30" fill="none" stroke="var(--clr-primary-lighter)" stroke-width="2" opacity="0.4">
+                        <animate attributeName="r" values="20;45" dur="3s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.6;0" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                    <!-- Location Pin -->
+                    <path d="M100 50 C80 50 64 66 64 86 C64 120 100 156 100 156 C100 156 136 120 136 86 C136 66 120 50 100 50 Z" fill="var(--clr-primary)" filter="drop-shadow(0 6px 12px rgba(255,107,53,0.3))"/>
+                    <circle cx="100" cy="86" r="14" fill="#FFFFFF" />
+                    <!-- Inside circle - plate/fork spoon icon -->
+                    <path d="M96 82 L96 90 M104 82 L104 90 M96 86 L104 86" stroke="var(--clr-primary)" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex flex-col gap-3">
+                <button type="button" class="btn btn-primary btn-full" id="btnAllowLocation">
+                    <span class="btn-label">📍 Allow Current Location</span>
+                </button>
+                <button type="button" class="btn btn-outline btn-full" id="btnChooseManual">
+                    <span class="btn-label">🔍 Choose Location Manually</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal — Choose Location Manually -->
+    <div class="modal-overlay" id="manualLocationModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">Select Delivery Location</h2>
+                <button type="button" class="modal-close" id="closeManualModal" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Location Search input -->
+                <div class="form-group" style="position: relative;">
+                    <label class="form-label" for="manualLocationSearch">Search Area / Society / College</label>
+                    <div class="inp-wrap">
+                        <span class="inp-icon">
+                            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        </span>
+                        <input type="text" id="manualLocationSearch" class="form-input" placeholder="Type area (e.g. Kharghar, Dadar, Panvel)...">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 style="font-size: var(--fs-13); font-weight: 700; color: var(--clr-text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--sp-3);">Popular Cities</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" class="city-pill">Mumbai</button>
+                        <button type="button" class="city-pill">Navi Mumbai</button>
+                        <button type="button" class="city-pill">Thane</button>
+                        <button type="button" class="city-pill">Pune</button>
+                        <button type="button" class="city-pill">Nashik</button>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-full" id="btnSaveLocation" style="height: 48px;">
+                    <span class="btn-label">Confirm &amp; Proceed</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal — Location Denied Alert -->
+    <div class="modal-overlay" id="locationDeniedModal">
+        <div class="modal-container" style="max-width: 380px;">
+            <div class="modal-body text-center" style="padding: var(--sp-8) var(--sp-6);">
+                <div style="font-size: 3rem; margin-bottom: var(--sp-4);">📍</div>
+                <h3 style="font-size: var(--fs-18); font-weight: 800; color: var(--clr-text-1); margin-bottom: var(--sp-2);">Location Access Denied</h3>
+                <p style="font-size: var(--fs-14); color: var(--clr-text-3); line-height: 1.6; margin-bottom: var(--sp-6);">
+                    We couldn't access your location. You can still continue by choosing your location manually.
+                </p>
+                <button type="button" class="btn btn-primary btn-full" id="btnDeniedOk" style="height: 46px;">
+                    Choose Location Manually
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Styles for pills -->
+    <style>
+        .city-pill {
+            background: var(--clr-surface);
+            border: 1.5px solid var(--clr-border-2);
+            color: var(--clr-text-2);
+            font-size: var(--fs-13);
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: var(--r-pill);
+            transition: all var(--t-base);
+        }
+        .city-pill:hover, .city-pill.active {
+            border-color: var(--clr-primary);
+            background: var(--clr-accent);
+            color: var(--clr-primary);
+        }
+    </style>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

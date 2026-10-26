@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>LocalBites — Admin Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+
+    <style>
+        /* Admin dashboard — responsive layout aligned with LocalBites portal styling */
+        .admin-shell {
+            width: min(100% - 48px, 1440px);
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: clamp(24px, 4vw, 52px) 0 64px;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 34px;
+            padding: 26px 30px;
+            background: linear-gradient(135deg, var(--clr-bg, #fff) 0%, var(--clr-surface-2, #f7faf7) 100%);
+            border: 1px solid var(--clr-border, #e5e7eb);
+            border-radius: 20px;
+            box-shadow: var(--sh-sm, 0 8px 24px rgba(20, 40, 20, .06));
+        }
+
+        .admin-header h1 {
+            margin: 8px 0 0;
+            font-size: clamp(25px, 3vw, 34px);
+            line-height: 1.2;
+            font-weight: 800;
+            letter-spacing: -.035em;
+            color: var(--clr-text-1, #1f2937);
+        }
+
+        .admin-header .wordmark { font-size: 15px; font-weight: 800; }
+
+        .admin-header .logout-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 18px;
+            border: 1px solid var(--clr-border, #e5e7eb);
+            border-radius: 12px;
+            background: var(--clr-bg, #fff);
+            color: var(--clr-text-2, #4b5563);
+            text-decoration: none;
+            transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+            white-space: nowrap;
+        }
+
+        .admin-header .logout-link:hover {
+            background: var(--clr-secondary-bg, #edf7ee);
+            color: var(--clr-secondary, #2e7d32);
+            border-color: var(--clr-secondary, #2e7d32);
+            transform: translateY(-1px);
+        }
+
+        .admin-section {
+            margin: 0 0 38px;
+            padding: clamp(18px, 2.4vw, 30px);
+            background: var(--clr-surface, rgba(255,255,255,.72));
+            border: 1px solid var(--clr-border, #e5e7eb);
+            border-radius: 20px;
+            box-shadow: var(--sh-xs, 0 4px 16px rgba(20, 40, 20, .04));
+        }
+
+        .admin-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 22px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--clr-border, #e5e7eb);
+            color: var(--clr-text-1, #1f2937);
+            font-size: clamp(17px, 2vw, 20px);
+            line-height: 1.4;
+            font-weight: 800;
+        }
+
+        .biz-card {
+            min-width: 0;
+            margin: 0 0 16px;
+            padding: clamp(18px, 2vw, 26px);
+            background: var(--clr-bg, #fff);
+            border: 1px solid var(--clr-border, #e5e7eb);
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(22, 45, 22, .035);
+            transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+        }
+
+        .biz-card:last-child { margin-bottom: 0; }
+        .biz-card:hover {
+            border-color: var(--clr-border-2, #d5e2d5);
+            box-shadow: 0 10px 28px rgba(22, 45, 22, .07);
+            transform: translateY(-1px);
+        }
+
+        .biz-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .biz-card-top > div { min-width: 0; }
+        .biz-name {
+            margin-bottom: 8px;
+            color: var(--clr-text-1, #1f2937);
+            font-size: clamp(16px, 1.6vw, 19px);
+            line-height: 1.4;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .biz-meta {
+            margin-top: 5px;
+            color: var(--clr-text-3, #6b7280);
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .biz-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: .045em;
+        }
+
+        .biz-badge.pending { background: rgba(245, 124, 0, .11); color: var(--clr-warn, #b96500); }
+        .biz-badge.active { background: var(--clr-success-bg, #eaf7ed); color: var(--clr-success, #23833b); }
+
+        .doc-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin: 20px 0 0;
+        }
+
+        .doc-links a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            max-width: 100%;
+            padding: 7px 12px;
+            border: 1px solid var(--clr-border-2, #dfe6df);
+            border-radius: 10px;
+            background: var(--clr-surface-2, #f8faf8);
+            color: var(--clr-secondary, #2e7d32);
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.4;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+            transition: background .2s ease, border-color .2s ease;
+        }
+
+        .doc-links a:hover {
+            background: var(--clr-secondary-bg, #edf7ee);
+            border-color: var(--clr-secondary, #2e7d32);
+        }
+
+        .biz-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--clr-border, #e5e7eb);
+        }
+
+        .biz-actions .btn {
+            min-height: 40px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+
+        .biz-actions .btn:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(0,0,0,.08); }
+        .biz-actions .reject-btn { border: 1px solid rgba(211,47,47,.12); }
+        .empty-note {
+            margin: 0;
+            padding: 22px;
+            border: 1px dashed var(--clr-border-2, #d5ded5);
+            border-radius: 14px;
+            background: var(--clr-surface-2, #f8faf8);
+            color: var(--clr-text-3, #6b7280);
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        @media (min-width: 1200px) {
+            .admin-section { padding: 30px 34px; }
+            .biz-card { padding: 26px 30px; }
+        }
+
+        @media (max-width: 700px) {
+            .admin-shell { width: calc(100% - 28px); padding-top: 18px; padding-bottom: 36px; }
+            .admin-header { align-items: flex-start; padding: 20px; margin-bottom: 22px; border-radius: 16px; }
+            .admin-header h1 { font-size: 25px; }
+            .admin-header .logout-link { min-height: 38px; padding: 8px 12px; font-size: 12px; }
+            .admin-section { padding: 18px 14px; margin-bottom: 22px; border-radius: 16px; }
+            .admin-section h2 { margin-bottom: 16px; padding-bottom: 13px; }
+            .biz-card { padding: 18px 15px; border-radius: 14px; }
+            .biz-card-top { gap: 12px; }
+            .biz-badge { padding: 5px 10px; }
+            .biz-actions { gap: 8px; }
+            .biz-actions .btn { flex: 1 1 120px; padding: 10px 12px; }
+        }
+
+        @media (max-width: 420px) {
+            .admin-shell { width: calc(100% - 20px); }
+            .admin-header { gap: 10px; padding: 16px 13px; }
+            .admin-header h1 { font-size: 21px; }
+            .admin-header .logout-link { padding: 7px 9px; }
+            .biz-card-top { flex-direction: column-reverse; align-items: flex-start; }
+            .doc-links a { flex: 1 1 100%; }
+            .biz-actions { flex-direction: column; }
+            .biz-actions .btn { width: 100%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .biz-card, .admin-header .logout-link, .doc-links a, .biz-actions .btn { transition: none; }
+            .biz-card:hover, .admin-header .logout-link:hover, .biz-actions .btn:hover { transform: none; }
+        }
+    </style>
+</head>
+<body class="page-shell" data-page="admin-dashboard">
+
+    <div class="admin-shell">
+        <div class="admin-header">
+            <div>
+                <div class="wordmark"><span class="l">Local</span><span class="b">Bites</span></div>
+                <h1>Admin Dashboard</h1>
+            </div>
+            <span class="logout-link" id="adminLogout">Sign out</span>
+        </div>
+
+        <div class="admin-section">
+            <h2>Pending Approval ({{ pending|length }})</h2>
+            {% if not pending %}
+                <p class="empty-note">No businesses waiting on review right now.</p>
+            {% endif %}
+            {% for biz in pending %}
+                <div class="biz-card" data-business-id="{{ biz.business_id }}">
+                    <div class="biz-card-top">
+                        <div>
+                            <div class="biz-name">{{ biz.business_name }}</div>
+                            <div class="biz-meta">{{ biz.owner_name }} · {{ biz.business_type.replace('_', ' ')|title }}</div>
+                            <div class="biz-meta">{{ biz.email }} · {{ biz.phone }}</div>
+                            <div class="biz-meta">Registered {{ biz.created_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+                        </div>
+                        <span class="biz-badge pending">Pending</span>
+                    </div>
+
+                    <div class="doc-links">
+                        {% if biz.doc_owner_id_path %}
+                            <a href="{{ url_for('admin.view_document', relative_path=biz.doc_owner_id_path) }}" target="_blank" rel="noopener">Owner ID Proof</a>
+                        {% endif %}
+                        {% if biz.doc_business_proof_path %}
+                            <a href="{{ url_for('admin.view_document', relative_path=biz.doc_business_proof_path) }}" target="_blank" rel="noopener">Business Proof</a>
+                        {% endif %}
+                        {% if biz.doc_premises_owned_path %}
+                            <a href="{{ url_for('admin.view_document', relative_path=biz.doc_premises_owned_path) }}" target="_blank" rel="noopener">Premises Proof (Owned)</a>
+                        {% endif %}
+                        {% if biz.doc_premises_rented_path %}
+                            <a href="{{ url_for('admin.view_document', relative_path=biz.doc_premises_rented_path) }}" target="_blank" rel="noopener">Premises Proof (Rented)</a>
+                        {% endif %}
+                    </div>
+
+                    <div class="biz-actions">
+                        <button class="btn btn-secondary approve-btn" type="button">Approve</button>
+                        <button class="btn reject-btn" type="button" style="background:var(--clr-error-bg); color:var(--clr-error);">Reject</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="admin-section">
+            <h2>Active Businesses ({{ active|length }})</h2>
+            {% if not active %}
+                <p class="empty-note">No approved businesses yet.</p>
+            {% endif %}
+            {% for biz in active %}
+                <div class="biz-card">
+                    <div class="biz-card-top">
+                        <div>
+                            <div class="biz-name">{{ biz.business_name }}</div>
+                            <div class="biz-meta">{{ biz.owner_name }} · {{ biz.business_type.replace('_', ' ')|title }}</div>
+                            <div class="biz-meta">{{ biz.email }} · {{ biz.phone }}</div>
+                        </div>
+                        <span class="biz-badge active">Active</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('adminLogout')?.addEventListener('click', () => {
+                LB.logout(window.location.pathname.replace(/\/dashboard$/, '/logout'), window.location.pathname.replace(/\/dashboard$/, '/login'));
+            });
+
+            document.querySelectorAll('.biz-card[data-business-id]').forEach(card => {
+                const businessId = card.dataset.businessId;
+                const base = window.location.pathname.replace(/\/dashboard$/, '');
+
+                card.querySelector('.approve-btn')?.addEventListener('click', () => {
+                    if (!confirm('Approve this business? They will be able to log in immediately.')) return;
+                    fetch(`${base}/businesses/${businessId}/approve`, { method: 'POST' })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                LB.toast('Business approved', 'success');
+                                setTimeout(() => window.location.reload(), 700);
+                            } else {
+                                LB.toast(data.message || 'Could not approve.', 'error');
+                            }
+                        })
+                        .catch(() => LB.toast('Network error — please try again.', 'error'));
+                });
+
+                card.querySelector('.reject-btn')?.addEventListener('click', () => {
+                    if (!confirm('Reject and permanently remove this application?')) return;
+                    fetch(`${base}/businesses/${businessId}/reject`, { method: 'POST' })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                LB.toast('Application rejected', 'info');
+                                card.remove();
+                            } else {
+                                LB.toast(data.message || 'Could not reject.', 'error');
+                            }
+                        })
+                        .catch(() => LB.toast('Network error — please try again.', 'error'));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalBites Category Listing — Explore premium food services near you.">
+    <meta name="theme-color" content="#FF6B35">
+    <title>LocalBites — Category Listings</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}"> <!-- Reuses cards & grid styles -->
+    
+    <style>
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding: var(--sp-2) 0 var(--sp-4);
+            margin-bottom: var(--sp-4);
+        }
+        .filter-row::-webkit-scrollbar { display: none; }
+        .filter-pill {
+            background: var(--clr-surface);
+            border: 1.5px solid var(--clr-border-2);
+            color: var(--clr-text-2);
+            padding: 8px 16px;
+            font-size: var(--fs-13);
+            font-weight: 700;
+            border-radius: var(--r-pill);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all var(--t-base);
+        }
+        .filter-pill:hover, .filter-pill.active {
+            border-color: var(--clr-primary);
+            background: var(--clr-accent);
+            color: var(--clr-primary);
+        }
+        .filter-btn {
+            background: var(--clr-primary-bg);
+            border: 1.5px solid var(--clr-primary-lighter);
+            color: var(--clr-primary);
+            border-radius: var(--r-pill);
+            padding: 8px 16px;
+            font-size: var(--fs-13);
+            font-weight: 700;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+        }
+        .list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: var(--sp-6);
+            margin-bottom: var(--sp-12);
+        }
+    </style>
+</head>
+<body class="page-shell" data-page="category-list">
+
+    <!-- ── TOP NAVIGATION ── -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <button class="back-btn" id="globalBack" data-dest="/customer/dashboard" aria-label="Go back">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="wordmark wordmark-md" style="margin-left: 54px;">
+                <span class="l">Local</span><span class="b">Bites</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="profile-avatar" onclick="LB.navigate('/customer/dashboard')">
+                <span>C</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ambient Blobs -->
+    <div class="blob blob-tr"></div>
+    <div class="blob blob-bl"></div>
+
+    <!-- ── MAIN CONTAINER ── -->
+    <main class="dashboard-container">
+        
+        <!-- Header Title dynamic -->
+        <div class="mb-4">
+            <span class="card-type" id="categoryTag" style="font-size: var(--fs-13);">EXPLORE</span>
+            <h1 class="scr-title" id="categoryTitle" style="font-size: var(--fs-28); margin-top: 4px;">Food Services</h1>
+            <p class="scr-sub" style="margin-bottom: 0;">Verified nearby local kitchens preparing fresh meals.</p>
+        </div>
+
+        <!-- Search box inside page -->
+        <div class="search-wrapper mb-4">
+            <span class="search-btn-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="text" id="categorySearch" class="search-bar-input" placeholder="Search within this category...">
+        </div>
+
+        <!-- Sort & Filter options row -->
+        <div class="filter-row">
+            <button type="button" class="filter-pill active" data-sort="default">All</button>
+            <button type="button" class="filter-pill" data-sort="name">🔤 Name</button>
+            <button type="button" class="filter-pill" data-sort="price">💰 Low Price</button>
+            
+            <button type="button" class="filter-btn" onclick="LB.toast('Advanced Filters coming soon.', 'info')">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                Filters
+            </button>
+        </div>
+
+        <!-- Provider Card Grid -->
+        <div class="list-grid" id="categoryListingsGrid">
+            <!-- Skeleton cards -->
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-text"></div></div>
+        </div>
+
+        <!-- Empty result state (hidden by default) -->
+        <div id="categoryEmptyState" class="hidden text-center" style="padding: var(--sp-12) 0;">
+            <div style="font-size: 4rem; margin-bottom: var(--sp-4);">🔍</div>
+            <h3 style="font-size: var(--fs-18); font-weight: 800; color: var(--clr-text-1); margin-bottom: var(--sp-2);">No Providers Found</h3>
+            <p style="font-size: var(--fs-14); color: var(--clr-text-3); max-width: 320px; margin: 0 auto;">
+                We couldn't find any listings matching your search or filter. Try checking another category.
+            </p>
+        </div>
+
+    </main>
+
+    <!-- ── BOTTOM NAVIGATION ── -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-item" onclick="LB.navigate('/customer/dashboard')">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </div>
+        <div class="bottom-nav-item" onclick="LB.navigate('/customer/search')">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+        </div>
+        <div class="bottom-nav-item" onclick="LB.toast('Orders tab will be connected.', 'info')">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Orders</span>
+        </div>
+        <div class="bottom-nav-item" onclick="LB.toast('Favorites tab will be connected.', 'info')">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>Favorites</span>
+        </div>
+        <div class="bottom-nav-item" onclick="LB.toast('Profile tab will be connected.', 'info')">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </div>
+    </div>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentCat = sessionStorage.getItem('selected_category') || 'mess';
+
+            // Map types to beautiful labels
+            const catMap = {
+                mess: { tag: "🍱 MESS SERVICES", title: "Nearby Mess Services" },
+                home_kitchen: { tag: "🥘 HOME KITCHEN", title: "Nearby Home Kitchens" },
+                tiffin_service: { tag: "🍛 TIFFIN SERVICE", title: "Nearby Tiffin Services" },
+                canteen: { tag: "🏫 COLLEGE CANTEENS", title: "Nearby College Canteens" },
+                poli_bhaji_kendra: { tag: "🫓 POLI BHAJI KENDRA", title: "Nearby Poli Bhaji Kendras" },
+                festival_seller: { tag: "🎉 FESTIVAL FOOD", title: "Nearby Festival Food Sellers" }
+            };
+            const TYPE_EMOJI = {
+                mess: "🍱", home_kitchen: "🥘", tiffin_service: "🍛",
+                canteen: "🏫", poli_bhaji_kendra: "🫓", festival_seller: "🎉"
+            };
+
+            const info = catMap[currentCat] || catMap.mess;
+            document.getElementById('categoryTag').textContent = info.tag;
+            document.getElementById('categoryTitle').textContent = info.title;
+
+            const grid = document.getElementById('categoryListingsGrid');
+            const emptyState = document.getElementById('categoryEmptyState');
+
+            let currentList = [];
+
+            // Escape text/attributes coming from the DB before putting into HTML
+            const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+
+            // Business logo (uploaded by the business) with emoji fallback when
+            // no logo exists or the image fails to load.
+            const renderBusinessImage = (item) => {
+                const emoji = TYPE_EMOJI[item.type] || '🍽️';
+                const tileStyle = 'width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#E5E9F2; font-size:3rem;';
+                if (!item.logoUrl) {
+                    return `<div class="card-img" style="${tileStyle}">${emoji}</div>`;
+                }
+                return `<img class="card-img" src="${esc(item.logoUrl)}" alt="${esc(item.name)} logo" loading="lazy"
+                    style="width:100%; height:100%; object-fit:cover;"
+                    onerror="this.outerHTML='&lt;div class=&quot;card-img&quot; style=&quot;${tileStyle}&quot;&gt;${emoji}&lt;/div&gt;';">`;
+            };
+
+            const renderCard = (item) => {
+                const statusText = item.open === false ? 'Closed' : (item.open === true ? 'Open Now' : '');
+                const statusClass = item.open ? 'open' : 'closed';
+                const priceText = item.startingPrice != null ? `From ₹${item.startingPrice}` : 'Menu coming soon';
+
+                return `
+                    <div class="food-card" style="flex: auto;">
+                        <div class="card-img-wrap">
+                            ${renderBusinessImage(item)}
+                            <div class="card-overlay-badges">
+                                ${statusText ? `<span class="badge-status ${statusClass}">${statusText}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <span class="card-type">${item.typeLabel}</span>
+                            <h3 class="card-title">${item.name}</h3>
+                            <div style="font-size: var(--fs-13); color: var(--clr-text-3); font-weight: 500; margin-bottom: 2px;">
+                                📍 ${item.address}
+                            </div>
+                            <div class="card-meta-row">
+                                <span class="card-price">${priceText}</span>
+                            </div>
+                        </div>
+                        <div class="card-action-row">
+                            <button type="button" class="btn card-btn" onclick="sessionStorage.setItem('selected_provider_id', ${item.id}); LB.navigate('/customer/food-details');">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const renderGrid = (items) => {
+                grid.innerHTML = '';
+                if (items.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                emptyState.classList.add('hidden');
+                grid.innerHTML = items.map(item => renderCard(item)).join('');
+            };
+
+            // Fetch real, approved businesses of this category from the DB
+            fetch(`/customer/api/businesses?type=${encodeURIComponent(currentCat)}`, { credentials: 'same-origin' })
+                .then(res => res.json())
+                .then(data => {
+                    currentList = data.businesses || [];
+                    renderGrid(currentList);
+                })
+                .catch(() => {
+                    currentList = [];
+                    renderGrid([]);
+                    LB.toast("Couldn't load businesses right now. Please try again.", 'error');
+                });
+
+            // Handle Sorting Pills (rating/distance dropped — no real
+            // data for either yet; price and name are real fields)
+            const pills = document.querySelectorAll('.filter-pill');
+            pills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    pills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+
+                    const sortType = pill.dataset.sort;
+                    let sortedList = [...currentList];
+
+                    if (sortType === 'price') {
+                        sortedList.sort((a, b) => (a.startingPrice ?? Infinity) - (b.startingPrice ?? Infinity));
+                    } else if (sortType === 'name') {
+                        sortedList.sort((a, b) => a.name.localeCompare(b.name));
+                    }
+
+                    renderGrid(sortedList);
+                });
+            });
+
+            // Handle Search filter within category listings
+            const searchInput = document.getElementById('categorySearch');
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                const filtered = currentList.filter(item =>
+                    item.name.toLowerCase().includes(query) ||
+                    item.address.toLowerCase().includes(query)
+                );
+                renderGrid(filtered);
+            });
+        });
+    </script>
+</body>
+</html>

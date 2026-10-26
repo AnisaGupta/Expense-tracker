@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newly Added Services — LocalBites</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Stylesheets (same set as the My Orders page) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <style>
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+        .services-grid .food-card { flex: auto; }
+        .services-grid .card-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background: transparent;
+        }
+        .services-grid .card-img-fallback {
+            display: none;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            background: #E5E9F2;
+            font-size: 3rem;
+        }
+        @media (max-width: 600px) {
+            .services-sub-header { flex-direction: column; align-items: flex-start !important; gap: 16px; padding: 20px !important; }
+        }
+    </style>
+</head>
+<body class="page-shell" data-page="business-list">
+
+    <!-- Global Header (LocalBites navbar + side drawer) -->
+    {% include 'customer/_header.html' %}
+
+    {% set type_emoji = {
+        'mess': '🍱', 'home_kitchen': '🥘', 'tiffin_service': '🍛',
+        'canteen': '🏫', 'poli_bhaji_kendra': '🫓', 'festival_seller': '🎉'
+    } %}
+
+    <!-- Main Outer Container (same as My Orders) -->
+    <main class="orders-page-container" style="width: 100%; margin: 32px 0 60px 0; padding: 0 20px; box-sizing: border-box;">
+
+        <!-- Sub-Header Hero Panel -->
+        <section class="services-sub-header" style="width: 100%; background: linear-gradient(135deg, #ffffff, #fff7f2); border: 1px solid #fee6d8; border-radius: 16px; padding: 28px 32px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.04); box-sizing: border-box;">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(255, 107, 53, 0.12); color: #FF6B35; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div>
+                    <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Newly Added Services</h1>
+                    <p style="font-size: 14px; color: #64748b; margin: 0;">Fresh local kitchens that recently joined LocalBites</p>
+                </div>
+            </div>
+
+            <!-- Back to Home Action -->
+            <a href="{{ url_for('customer.dashboard') }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; background: #ffffff; border: 1px solid #e2e8f0; color: #334155; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s ease;">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+        </section>
+
+        {% if businesses %}
+        <!-- Business cards -->
+        <div class="services-grid">
+            {% for biz in businesses %}
+            {% set emoji = type_emoji.get(biz.type, '🍽️') %}
+            <div class="food-card">
+                <div class="card-img-wrap">
+                    {% if biz.logoUrl %}
+                    <img class="card-img"
+                         src="{{ biz.logoUrl }}"
+                         alt="{{ biz.name }} logo"
+                         loading="lazy"
+                         style="width:100%; height:100%; object-fit:cover;"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="card-img-fallback">{{ emoji }}</div>
+                    {% else %}
+                    <div class="card-img-fallback" style="display:flex;">{{ emoji }}</div>
+                    {% endif %}
+
+                    <div class="card-overlay-badges">
+                        {% if biz.open is sameas true %}
+                            <span class="badge-status open">Open Now</span>
+                        {% elif biz.open is sameas false %}
+                            <span class="badge-status closed">Closed</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-info">
+                    <span class="card-type">{{ biz.typeLabel or biz.type or 'Kitchen' }}</span>
+                    <h3 class="card-title">{{ biz.name }}</h3>
+                    <div style="font-size: var(--fs-13); color: var(--clr-text-3); font-weight: 500; margin-bottom: 2px;">
+                        📍 {{ biz.address or 'Local Area' }}
+                    </div>
+                    <div class="card-meta-row">
+                        <span class="card-price">
+                            {% if biz.startingPrice is not none %}From ₹{{ biz.startingPrice|int if biz.startingPrice == biz.startingPrice|int else biz.startingPrice }}{% else %}Menu coming soon{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-action-row">
+                    <a class="btn card-btn"
+                       href="{{ url_for('customer.food_details') }}?biz={{ biz.id }}"
+                       onclick="sessionStorage.setItem('selected_provider_id', '{{ biz.id }}');">
+                        View Kitchen
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty state (same look as My Orders empty state) -->
+        <div style="text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <i class="fa-solid fa-store fa-2x" style="color: #FF6B35;"></i>
+            <p style="margin-top: 14px; font-weight: 700; color: #475569; font-size: 14px;">No new food partners found at the moment.</p>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+</body>
+</html>

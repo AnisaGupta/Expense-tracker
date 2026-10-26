@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="LocalBites — Connecting You with Trusted Local Food. Discover nearby messes, home kitchens, tiffin services and more.">
+    <meta name="theme-color" content="#FF6B35">
+    <title>LocalBites — Trusted Local Food Near You</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+    <!-- Splash override: no pgIn anim -->
+    <style>
+        body {
+            animation: none !important;
+        }
+
+        .splash-content {
+            width: 100%;
+            max-width: 480px;
+            padding: 0 var(--sp-5);
+        }
+
+        .skip-hint {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: var(--fs-11);
+            font-weight: 700;
+            color: var(--clr-text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 2.5s both;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body class="splash-body" data-page="splash" style="cursor: pointer;">
+
+    <!-- Ambient orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Main Content -->
+    <div class="splash-content flex flex-col items-center" style="gap:28px; position:relative; z-index:2;">
+        <div class="splash-logo-wrap">
+            <div class="splash-logo-glow"></div>
+            <!-- Logo link -->
+            <img src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="LocalBites Logo" class="logo-img logo-img-xl splash-logo-img"
+                id="splashLogoImg"
+                onerror="this.style.display='none'; document.getElementById('splashLogoFb').style.display='flex';">
+            <!-- Fallback SVG -->
+            <div id="splashLogoFb" class="splash-logo-img"
+                style="display:none; width:140px; height:140px; position:relative; z-index:1;" aria-hidden="true">
+                <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+                    <defs>
+                        <radialGradient id="pinG" cx="40%" cy="35%" r="65%">
+                            <stop offset="0%" stop-color="#FF8C5A" />
+                            <stop offset="100%" stop-color="#E55A25" />
+                        </radialGradient>
+                    </defs>
+                    <path
+                        d="M100 12 C65 12 37 40 37 75 C37 120 100 208 100 208 C100 208 163 120 163 75 C163 40 135 12 100 12Z"
+                        fill="url(#pinG)" opacity=".96" />
+                    <circle cx="100" cy="74" r="34" fill="white" opacity=".96" />
+                    <path d="M80 74 Q80 92 100 92 Q120 92 120 74" stroke="#FF6B35" stroke-width="3.2" fill="none"
+                        stroke-linecap="round" />
+                    <line x1="80" y1="74" x2="120" y2="74" stroke="#FF6B35" stroke-width="3" stroke-linecap="round" />
+                    <path d="M91 63 Q88 55 91 47" stroke="#2E7D32" stroke-width="2.4" fill="none"
+                        stroke-linecap="round" />
+                    <path d="M100 60 Q97 52 100 44" stroke="#2E7D32" stroke-width="2.4" fill="none"
+                        stroke-linecap="round" />
+                    <path d="M109 63 Q106 55 109 47" stroke="#2E7D32" stroke-width="2.4" fill="none"
+                        stroke-linecap="round" />
+                    <path d="M42 82 Q22 110 28 138 Q52 118 58 90Z" fill="#2E7D32" opacity=".82" />
+                    <path d="M36 92 Q16 118 24 146 Q48 126 52 100Z" fill="#4CAF50" opacity=".65" />
+                    <ellipse cx="100" cy="208" rx="18" ry="5" fill="#E55A25" opacity=".4" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="splash-brand">
+            <h1 class="splash-app-name">
+                <span class="l">Local</span><span class="b">Bites</span>
+            </h1>
+            <p class="splash-tagline">Connecting You with Trusted Local Food</p>
+        </div>
+    </div>
+
+    <!-- Loading dots -->
+    <div class="splash-loader" aria-label="Loading…" role="status">
+        <div class="splash-dots">
+            <span class="splash-dot"></span>
+            <span class="splash-dot"></span>
+            <span class="splash-dot"></span>
+        </div>
+    </div>
+
+    <!-- Skip Hint -->
+    <div class="skip-hint">Tap anywhere to skip</div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auto navigate after 5 seconds to let the premium animation play out fully
+            const redirectTimeout = setTimeout(() => {
+                LB.navigate('/role');
+            }, 5000);
+
+            // Allow user to click anywhere to skip immediately
+            document.body.addEventListener('click', () => {
+                clearTimeout(redirectTimeout);
+                LB.navigate('/role');
+            });
+        });
+    </script>
+</body>
+
+</html>

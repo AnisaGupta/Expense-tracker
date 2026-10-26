@@ -1,0 +1,554 @@
+/* =========================================================
+   LOCALBITES — HELP & SUPPORT PAGE
+   ========================================================= */
+
+.help-page {
+    width: 100%;
+    padding: 32px 20px 80px;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.help-hero {
+    position: relative;
+    overflow: hidden;
+
+    padding: 34px;
+
+    margin-bottom: 24px;
+
+    border-radius: 24px;
+
+    background: linear-gradient(
+        135deg,
+        #fff3eb,
+        #fff9f5
+    );
+
+    border: 1px solid var(--clr-border);
+
+    box-shadow: var(--sh-sm);
+}
+
+.help-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -55px;
+    top: -65px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 107, 53, 0.08);
+}
+
+.help-hero-content {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.help-hero-icon {
+    width: 68px;
+    height: 68px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background: var(--clr-primary);
+
+    color: #ffffff;
+
+    font-size: 27px;
+
+    box-shadow: 0 10px 25px rgba(255, 107, 53, 0.22);
+}
+
+.help-eyebrow,
+.section-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    color: var(--clr-primary);
+}
+
+.help-hero h1 {
+    margin: 0 0 7px;
+
+    font-size: 27px;
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+}
+
+.help-hero p {
+    max-width: 650px;
+
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 1.7;
+
+    color: var(--clr-text-3);
+}
+
+
+/* =========================================================
+   QUICK HELP
+   ========================================================= */
+
+.quick-help {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 38px;
+}
+
+.help-card {
+    padding: 20px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--clr-border);
+
+    border-radius: 18px;
+
+    box-shadow: var(--sh-sm);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.help-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow: var(--sh-md);
+}
+
+.help-card-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 13px;
+
+    border-radius: 12px;
+
+    background: var(--clr-accent);
+
+    color: var(--clr-primary);
+
+    font-size: 17px;
+}
+
+.help-card h3 {
+    margin: 0 0 6px;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+}
+
+.help-card p {
+    margin: 0;
+
+    font-size: 11px;
+    line-height: 1.6;
+
+    color: var(--clr-text-3);
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.section-heading {
+    margin-bottom: 18px;
+}
+
+.section-heading h2,
+.query-heading h2 {
+    margin: 0 0 6px;
+
+    font-size: 21px;
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+}
+
+.section-heading p {
+    margin: 0;
+
+    font-size: 12px;
+
+    color: var(--clr-text-3);
+}
+
+
+/* =========================================================
+   FAQ
+   ========================================================= */
+
+.faq-section {
+    margin-bottom: 38px;
+}
+
+.faq-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.faq-item {
+    background: #ffffff;
+
+    border: 1px solid var(--clr-border);
+
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    box-shadow: var(--sh-sm);
+}
+
+.faq-item summary {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 17px 19px;
+
+    cursor: pointer;
+
+    list-style: none;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: var(--clr-text-1);
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary i {
+    font-size: 11px;
+
+    color: var(--clr-text-3);
+
+    transition: transform 0.2s ease;
+}
+
+.faq-item[open] summary i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    padding: 0 19px 17px;
+
+    border-top: 1px solid var(--clr-border);
+}
+
+.faq-answer p {
+    margin: 14px 0 0;
+
+    font-size: 12px;
+    line-height: 1.7;
+
+    color: var(--clr-text-2);
+}
+
+
+/* =========================================================
+   QUERY SECTION
+   ========================================================= */
+
+.query-section {
+    margin-bottom: 22px;
+
+    padding: 25px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--clr-border);
+
+    border-radius: 21px;
+
+    box-shadow: var(--sh-sm);
+}
+
+.query-heading {
+    display: flex;
+
+    gap: 15px;
+
+    margin-bottom: 22px;
+}
+
+.query-heading-icon {
+    width: 47px;
+    height: 47px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: var(--clr-accent);
+
+    color: var(--clr-primary);
+
+    font-size: 18px;
+}
+
+.query-heading h2 {
+    font-size: 19px;
+}
+
+.query-heading p {
+    max-width: 700px;
+
+    margin: 0;
+
+    font-size: 12px;
+    line-height: 1.65;
+
+    color: var(--clr-text-3);
+}
+
+
+/* =========================================================
+   GOOGLE FORM
+   ========================================================= */
+
+.google-form-wrapper {
+    width: 100%;
+
+    overflow: hidden;
+
+    border: 1px solid var(--clr-border);
+
+    border-radius: 15px;
+
+    background: #ffffff;
+}
+
+.google-form {
+    display: block;
+
+    width: 100%;
+
+    min-height: 850px;
+
+    border: none;
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   SUPPORT NOTE
+   ========================================================= */
+
+.support-note {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 18px 20px;
+
+    margin-bottom: 20px;
+
+    border-radius: 17px;
+
+    background: var(--clr-accent);
+
+    border: 1px solid var(--clr-primary-lighter);
+}
+
+.support-note-icon {
+    width: 43px;
+    height: 43px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: var(--clr-primary);
+
+    font-size: 17px;
+}
+
+.support-note h3 {
+    margin: 0 0 5px;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+}
+
+.support-note p {
+    margin: 0;
+
+    font-size: 11px;
+    line-height: 1.6;
+
+    color: var(--clr-text-2);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.help-footer {
+    margin: 25px 0 0;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    color: var(--clr-text-3);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .quick-help {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .help-page {
+        padding: 20px 14px 60px;
+    }
+
+    .help-hero {
+        padding: 23px 19px;
+    }
+
+    .help-hero-content {
+        align-items: flex-start;
+    }
+
+    .help-hero-icon {
+        width: 52px;
+        height: 52px;
+
+        border-radius: 15px;
+
+        font-size: 21px;
+    }
+
+    .help-hero h1 {
+        font-size: 21px;
+    }
+
+    .help-hero p {
+        font-size: 12px;
+    }
+
+    .quick-help {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+    .help-card {
+        padding: 15px;
+    }
+
+    .help-card-icon {
+        width: 37px;
+        height: 37px;
+    }
+
+    .help-card h3 {
+        font-size: 13px;
+    }
+
+    .help-card p {
+        font-size: 10px;
+    }
+
+    .query-section {
+        padding: 18px;
+
+        border-radius: 17px;
+    }
+
+    .query-heading h2 {
+        font-size: 17px;
+    }
+
+    .google-form {
+        min-height: 900px;
+    }
+
+    .support-note {
+        align-items: flex-start;
+
+        padding: 16px;
+    }
+
+}

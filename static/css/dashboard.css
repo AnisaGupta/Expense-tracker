@@ -1,0 +1,1817 @@
+/* ============================================================
+   LocalBites — Dashboard Stylesheet (dashboard.css)
+   Contains: Header, Search, Categories, Banner,
+   Horizontal Lists, Cards, Bottom Navigation
+   ============================================================ */
+
+
+/* ============================================================
+   GENERAL / DESKTOP GRID OVERRIDES
+   ============================================================ */
+
+/* Hide Top duplicate static view cart button if present in top bar */
+.top-nav .view-cart-static-btn {
+    display: none !important;
+}
+
+
+/* Desktop horizontal dish grid */
+.h-scroll,
+.food-scroll-grid,
+.cat-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+    gap: 20px !important;
+    overflow-x: visible !important;
+    padding-bottom: 10px !important;
+}
+
+.food-card,
+.service-card {
+    width: 100% !important;
+    min-width: unset !important;
+    box-sizing: border-box !important;
+}
+
+
+/* ============================================================
+   VIEW CART POP-UP MODAL
+   ============================================================ */
+
+.cart-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-modal-content {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #666;
+}
+
+.cart-modal-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cart-modal-footer .btn-primary,
+.cart-modal-footer .btn-secondary {
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    flex: 1;
+}
+
+.cart-modal-footer .btn-primary {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.cart-modal-footer .btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+
+/* ============================================================
+   TOP NAV BAR
+   ============================================================ */
+
+.top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background: rgba(255, 255, 255, 0.85);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid var(--clr-border);
+
+    padding: var(--sp-3) var(--sp-5);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: 70px;
+}
+
+.nav-left,
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+}
+
+.menu-trigger,
+.nav-icon-btn {
+    width: 40px;
+    height: 40px;
+
+    border-radius: var(--r-full);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--clr-text-2);
+    background: var(--clr-surface);
+
+    transition: all var(--t-base);
+}
+
+.menu-trigger:hover,
+.nav-icon-btn:hover {
+    background: var(--clr-surface-2);
+    color: var(--clr-text-1);
+
+    transform: scale(1.04);
+}
+
+.menu-trigger svg,
+.nav-icon-btn svg {
+    width: 20px;
+    height: 20px;
+
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* Notification indicator badge */
+
+.badge-wrap {
+    position: relative;
+}
+
+.notif-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+
+    width: 9px;
+    height: 9px;
+
+    border-radius: var(--r-full);
+
+    background: var(--clr-primary);
+
+    border: 2px solid #FFFFFF;
+}
+
+
+/* Profile avatar */
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+
+    border-radius: var(--r-full);
+
+    border: 2px solid var(--clr-primary-lighter);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--clr-accent-2),
+            var(--clr-primary-light)
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+    color: #FFFFFF;
+    font-size: var(--fs-14);
+
+    cursor: pointer;
+
+    box-shadow: var(--sh-sm);
+
+    overflow: hidden;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* ============================================================
+   LOCATION BANNER
+   ============================================================ */
+
+.location-banner {
+    background: var(--clr-accent);
+
+    padding: var(--sp-3) var(--sp-5);
+
+    border-bottom: 1.5px solid var(--clr-accent-2);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.loc-details {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+}
+
+.loc-details svg {
+    width: 18px;
+    height: 18px;
+
+    stroke: var(--clr-primary);
+    fill: none;
+    stroke-width: 2.2;
+}
+
+.loc-lbl {
+    font-size: var(--fs-11);
+    font-weight: 700;
+
+    color: var(--clr-text-3);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+
+    line-height: 1.2;
+}
+
+.loc-name {
+    font-size: var(--fs-13);
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+
+    line-height: 1.3;
+
+    max-width: 200px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.change-loc-btn {
+    font-size: var(--fs-13);
+    font-weight: 800;
+
+    color: var(--clr-primary);
+
+    background: none;
+    border: none;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+}
+
+.change-loc-btn svg {
+    width: 14px;
+    height: 14px;
+
+    stroke: currentColor;
+    fill: none;
+
+    stroke-width: 2.5;
+}
+
+
+/* ============================================================
+   MAIN CONTENT GRID / SCROLLS
+   ============================================================ */
+
+.dashboard-container {
+    padding: var(--sp-5) var(--sp-5) var(--sp-16);
+
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--sp-8);
+
+    max-width: 800px;
+
+    margin: 0 auto;
+
+    width: 100%;
+}
+
+
+/* Container Layout */
+
+.category-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(180px, 1fr));
+
+    gap: 16px;
+
+    margin-top: 12px;
+}
+
+
+/* ============================================================
+   BASE CATEGORY CARD
+   ============================================================ */
+
+.category-card {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 16px;
+
+    padding: 24px 16px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.08);
+
+    border-color: #d1d5db;
+}
+
+
+/* Icon Badge Wrapper */
+
+.icon-wrapper {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+
+    margin-bottom: 12px;
+
+    transition: transform 0.25s ease;
+}
+
+.category-card:hover .icon-wrapper {
+    transform: scale(1.1);
+}
+
+
+/* Individual Category Themes */
+
+.icon-mess {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.icon-home {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.icon-tiffin {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.icon-canteen {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.icon-poli {
+    background: #fefce8;
+    color: #ca8a04;
+}
+
+.icon-festival {
+    background: #faf5ff;
+    color: #9333ea;
+}
+
+
+/* Typography */
+
+.category-name {
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #1f2937;
+
+    text-align: center;
+}
+
+
+/* ============================================================
+   SEARCH CARD SECTION
+   ============================================================ */
+
+.search-wrapper {
+    position: relative;
+    margin-top: var(--sp-1);
+}
+
+.search-bar-input {
+    width: 100%;
+    height: 54px;
+
+    padding: 0 54px 0 48px;
+
+    border: 1.5px solid var(--clr-border-2);
+
+    border-radius: var(--r-xl);
+
+    font-size: var(--fs-15);
+    font-weight: 500;
+
+    color: var(--clr-text-1);
+
+    background: var(--clr-surface);
+
+    box-shadow: var(--sh-sm);
+
+    transition: all var(--t-base);
+}
+
+.search-bar-input:focus {
+    border-color: var(--clr-primary);
+
+    background: #FFFFFF;
+
+    box-shadow:
+        var(--sh-md),
+        0 0 0 4px var(--clr-primary-glow);
+}
+
+.search-btn-icon {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: var(--clr-primary);
+
+    display: flex;
+    align-items: center;
+
+    pointer-events: none;
+}
+
+.search-btn-icon svg {
+    width: 20px;
+    height: 20px;
+
+    stroke: currentColor;
+    fill: none;
+
+    stroke-width: 2.2;
+}
+
+.voice-btn {
+    position: absolute;
+
+    right: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: var(--clr-text-3);
+
+    display: flex;
+    align-items: center;
+
+    padding: 4px;
+
+    border-radius: var(--r-sm);
+
+    transition: color var(--t-fast);
+}
+
+.voice-btn:hover {
+    color: var(--clr-primary);
+}
+
+.voice-btn svg {
+    width: 20px;
+    height: 20px;
+
+    stroke: currentColor;
+    fill: none;
+
+    stroke-width: 2.2;
+}
+
+
+/* ============================================================
+   QUICK CATEGORIES
+   ============================================================ */
+
+.cat-section-title {
+    font-size: var(--fs-18);
+
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+
+    letter-spacing: -.03em;
+
+    margin-bottom: var(--sp-4);
+}
+
+.cat-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: var(--sp-3);
+}
+
+.cat-card {
+    background: var(--clr-bg);
+
+    border: 1.5px solid var(--clr-border);
+
+    border-radius: var(--r-xl);
+
+    padding:
+        var(--sp-4)
+        var(--sp-2);
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: var(--sp-2);
+
+    text-align: center;
+
+    cursor: pointer;
+
+    box-shadow: var(--sh-xs);
+
+    transition: all var(--t-base);
+
+    user-select: none;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.cat-card:hover {
+    border-color: var(--clr-primary);
+
+    transform: translateY(-4px);
+
+    box-shadow: var(--sh-md);
+
+    background: var(--clr-accent);
+}
+
+.cat-emoji {
+    font-size: 1.8rem;
+
+    transition: transform var(--t-spring);
+}
+
+.cat-card:hover .cat-emoji {
+    transform: scale(1.18);
+}
+
+.cat-name {
+    font-size: var(--fs-12);
+
+    font-weight: 700;
+
+    color: var(--clr-text-1);
+}
+
+
+/* ============================================================
+   FEATURED BANNER SLIDER
+   ============================================================ */
+
+/*
+   IMPORTANT:
+
+   The track is 100% wide.
+
+   Each slide is also 100% of the track.
+
+   Therefore:
+
+   Slide 1 = 0%
+   Slide 2 = -100%
+   Slide 3 = -200%
+   Slide 4 = -300%
+
+   This prevents multiple slides appearing together.
+*/
+
+.banner-container {
+    position: relative;
+
+    width: 100%;
+
+    height: 180px;
+
+    overflow: hidden;
+
+    border-radius: var(--r-2xl);
+
+    box-shadow: var(--sh-md);
+
+    background: #2b170f;
+
+    border: 1px solid rgba(255, 107, 53, 0.16);
+}
+
+
+/* Slider track */
+
+.banner-track {
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+
+    transition:
+        transform 0.6s
+        cubic-bezier(0.4, 0, 0.2, 1);
+
+    will-change: transform;
+}
+
+
+/* Individual slide */
+
+.banner-slide {
+    position: relative;
+
+    flex: 0 0 100%;
+
+    width: 100%;
+    min-width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+        0
+        var(--sp-8);
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    background-size: cover;
+
+    background-position: center;
+
+    background-repeat: no-repeat;
+}
+
+
+/*
+   Existing banner background image.
+   If the HTML contains .banner-bg image,
+   this keeps it working.
+*/
+
+.banner-bg {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    object-position: center 58%;
+
+    z-index: 0;
+
+    transition:
+        transform 0.6s ease;
+}
+
+.banner-slide:hover .banner-bg {
+    transform: scale(1.03);
+}
+
+
+/* Dark overlay */
+
+.banner-slide::before {
+    content: '';
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(20, 10, 5, 0.75) 0%,
+            rgba(20, 10, 5, 0.45) 45%,
+            rgba(20, 10, 5, 0.10) 100%
+        );
+
+    z-index: 1;
+}
+
+
+/* Optional colored overlays */
+
+.banner-slide-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+}
+
+.banner-slide-overlay.orange {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 107, 53, 0.28),
+            rgba(255, 107, 53, 0.04)
+        );
+}
+
+.banner-slide-overlay.green {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(46, 125, 50, 0.28),
+            rgba(46, 125, 50, 0.04)
+        );
+}
+
+.banner-slide-overlay.yellow {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 179, 0, 0.24),
+            rgba(255, 179, 0, 0.03)
+        );
+}
+
+.banner-slide-overlay.red {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(211, 47, 47, 0.25),
+            rgba(211, 47, 47, 0.03)
+        );
+}
+
+
+/* Banner content */
+
+.banner-content {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 430px;
+
+    color: #FFFFFF;
+
+    text-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+
+/* Banner tag */
+
+.banner-tag {
+    display: inline-block;
+
+    font-size: var(--fs-10);
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    background: var(--clr-primary);
+
+    color: #FFFFFF;
+
+    padding: 3px 9px;
+
+    border-radius: var(--r-pill);
+
+    margin-bottom: 6px;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* Banner title */
+
+.banner-title {
+    font-size:
+        clamp(18px, 2.2vw, 28px);
+
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    margin: 0 0 5px;
+
+    letter-spacing: -0.02em;
+
+    color: #FFFFFF;
+}
+
+
+/* Banner description */
+
+.banner-desc {
+    font-size: var(--fs-12);
+
+    line-height: 1.5;
+
+    color: #FFFFFF;
+
+    opacity: 0.92;
+
+    margin: 0;
+
+    max-width: 380px;
+}
+
+
+/* Banner dots */
+
+.banner-dots {
+    position: absolute;
+
+    bottom: 12px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    z-index: 10;
+}
+
+
+/* Individual dot */
+
+.banner-dot {
+    width: 6px;
+    height: 6px;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+
+    border-radius: var(--r-full);
+
+    background:
+        rgba(255, 255, 255, 0.5);
+
+    cursor: pointer;
+
+    transition:
+        width 0.25s ease,
+        background 0.25s ease;
+}
+
+
+/* Active dot */
+
+.banner-dot.active {
+    width: 18px;
+
+    background: #FFFFFF;
+}
+
+
+/* ============================================================
+   CARDS & HORIZONTAL SCROLL
+   ============================================================ */
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: var(--sp-4);
+}
+
+.section-title {
+    font-size: var(--fs-18);
+
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+
+    letter-spacing: -.03em;
+}
+
+.see-all-link {
+    font-size: var(--fs-13);
+
+    font-weight: 700;
+
+    color: var(--clr-primary);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 2px;
+}
+
+.see-all-link svg {
+    width: 14px;
+    height: 14px;
+
+    stroke: currentColor;
+
+    fill: none;
+
+    stroke-width: 2.5;
+}
+
+
+/* Horizontal scroll */
+
+.h-scroll {
+    display: flex;
+
+    gap: var(--sp-4);
+
+    overflow-x: auto;
+
+    padding:
+        var(--sp-2)
+        0
+        var(--sp-4);
+
+    margin:
+        0
+        calc(-1 * var(--sp-5));
+
+    padding-left: var(--sp-5);
+    padding-right: var(--sp-5);
+
+    scroll-snap-type: x mandatory;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.h-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ============================================================
+   FOOD PROVIDER CARD
+   ============================================================ */
+
+.food-card {
+    flex:
+        0 0 260px;
+
+    scroll-snap-align: start;
+
+    background: var(--clr-bg);
+
+    border:
+        1.5px solid
+        var(--clr-border);
+
+    border-radius: var(--r-2xl);
+
+    overflow: hidden;
+
+    box-shadow: var(--sh-sm);
+
+    transition: all var(--t-base);
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow: var(--sh-lg);
+
+    border-color:
+        var(--clr-primary-lighter);
+}
+
+
+/* Card image */
+
+.card-img-wrap {
+    position: relative;
+
+    width: 100%;
+
+    height: 140px;
+
+    background:
+        var(--clr-surface-2);
+
+    overflow: hidden;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform var(--t-slow);
+}
+
+.food-card:hover .card-img {
+    transform: scale(1.05);
+}
+
+
+/* ============================================================
+   CARD BADGES
+   ============================================================ */
+
+.card-overlay-badges {
+    position: absolute;
+
+    inset: 12px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    z-index: 5;
+
+    pointer-events: none;
+}
+
+.badge-status {
+    font-size: var(--fs-10);
+
+    font-weight: 800;
+
+    padding: 4px 8px;
+
+    border-radius: var(--r-sm);
+
+    text-transform: uppercase;
+
+    color: #FFFFFF;
+
+    backdrop-filter: blur(4px);
+}
+
+.badge-status.open {
+    background:
+        rgba(46, 125, 50, 0.85);
+}
+
+.badge-status.closed {
+    background:
+        rgba(211, 47, 47, 0.85);
+}
+
+
+/* Diet badge */
+
+.badge-diet {
+    width: 20px;
+    height: 20px;
+
+    border-radius: var(--r-xs);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(255, 255, 255, 0.9);
+
+    box-shadow: var(--sh-xs);
+}
+
+.badge-diet-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: var(--r-full);
+}
+
+.diet-veg {
+    border:
+        1.5px solid
+        #2E7D32;
+}
+
+.diet-veg .badge-diet-dot {
+    background: #2E7D32;
+}
+
+.diet-nonveg {
+    border:
+        1.5px solid
+        #D32F2F;
+}
+
+.diet-nonveg .badge-diet-dot {
+    background: #D32F2F;
+}
+
+
+/* ============================================================
+   CARD CONTENT
+   ============================================================ */
+
+.card-info {
+    padding: var(--sp-4);
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    flex: 1;
+}
+
+.card-type {
+    font-size: var(--fs-11);
+
+    font-weight: 700;
+
+    color: var(--clr-primary);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+}
+
+.card-title {
+    font-size: var(--fs-15);
+
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+
+    letter-spacing: -0.02em;
+
+    line-height: 1.3;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.card-rating-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: var(--sp-2);
+
+    font-size: var(--fs-13);
+
+    font-weight: 700;
+
+    color: var(--clr-text-2);
+}
+
+.stars-filled {
+    color: #FFB300;
+
+    display: inline-flex;
+}
+
+.card-meta-row {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    font-size: var(--fs-13);
+
+    font-weight: 600;
+
+    color: var(--clr-text-3);
+
+    margin-top: var(--sp-1);
+
+    border-top:
+        1px dashed
+        var(--clr-border);
+
+    padding-top: var(--sp-3);
+}
+
+.card-price {
+    font-weight: 800;
+
+    color: var(--clr-text-1);
+}
+
+
+/* Card action */
+
+.card-action-row {
+    padding:
+        0
+        var(--sp-4)
+        var(--sp-4);
+}
+
+.card-btn {
+    height: 38px;
+
+    border-radius: var(--r-md);
+
+    font-size: var(--fs-13);
+
+    font-weight: 700;
+
+    width: 100%;
+
+    border:
+        1.5px solid
+        var(--clr-primary);
+
+    color: var(--clr-primary);
+}
+
+.card-btn:hover {
+    background: var(--clr-primary);
+
+    color: #FFFFFF;
+}
+
+
+/* ============================================================
+   BOTTOM NAV BAR
+   ============================================================ */
+
+.bottom-nav {
+    position: fixed;
+
+    bottom: 0;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 100;
+
+    width: 100%;
+
+    max-width: 600px;
+
+    height: 64px;
+
+    background:
+        rgba(255, 255, 255, 0.9);
+
+    backdrop-filter: blur(16px);
+
+    -webkit-backdrop-filter:
+        blur(16px);
+
+    border-top:
+        1px solid
+        var(--clr-border);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-around;
+
+    padding-bottom:
+        env(safe-area-inset-bottom);
+
+    box-shadow:
+        0 -4px 16px
+        rgba(0, 0, 0, 0.04);
+}
+
+.bottom-nav-item {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 3px;
+
+    color: var(--clr-text-3);
+
+    font-size: var(--fs-10);
+
+    font-weight: 700;
+
+    width: 64px;
+
+    height: 100%;
+
+    transition:
+        all var(--t-fast);
+
+    cursor: pointer;
+}
+
+.bottom-nav-item svg {
+    width: 20px;
+    height: 20px;
+
+    stroke: currentColor;
+
+    fill: none;
+
+    stroke-width: 2.2;
+
+    transition:
+        transform var(--t-fast);
+}
+
+.bottom-nav-item:hover {
+    color: var(--clr-primary);
+}
+
+.bottom-nav-item.active {
+    color: var(--clr-primary);
+}
+
+.bottom-nav-item.active svg {
+    transform:
+        translateY(-2px);
+
+    stroke: var(--clr-primary);
+}
+
+
+/* ============================================================
+   SKELETON LOADERS
+   ============================================================ */
+
+.skeleton-card {
+    flex: 0 0 260px;
+
+    border-radius: var(--r-2xl);
+
+    border:
+        1px solid
+        var(--clr-border);
+
+    background: #FFFFFF;
+
+    overflow: hidden;
+}
+
+.skeleton-img {
+    width: 100%;
+
+    height: 140px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+        );
+
+    background-size: 200% 100%;
+
+    animation:
+        loadingSkeleton 1.5s infinite;
+}
+
+.skeleton-text {
+    height: 12px;
+
+    margin: 12px;
+
+    border-radius: var(--r-xs);
+
+    background:
+        linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+        );
+
+    background-size: 200% 100%;
+
+    animation:
+        loadingSkeleton 1.5s infinite;
+}
+
+@keyframes loadingSkeleton {
+
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+
+/* ============================================================
+   CUSTOMER ITEMS GRID
+   ============================================================ */
+
+.customer-items-grid-wrapper {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(280px, 1fr)
+        ) !important;
+
+    gap: 20px !important;
+
+    width: 100% !important;
+
+    box-sizing: border-box;
+}
+
+
+/* ============================================================
+   MEDIA QUERIES
+   ============================================================ */
+
+@media (max-width: 580px) {
+
+    .cat-grid {
+        gap: var(--sp-2);
+    }
+
+    .cat-card {
+        padding:
+            var(--sp-3)
+            var(--sp-1);
+    }
+
+    .cat-emoji {
+        font-size: 1.5rem;
+    }
+
+    .cat-name {
+        font-size: var(--fs-11);
+    }
+
+    .banner-container {
+        height: 150px;
+    }
+
+    .banner-slide {
+        padding:
+            0
+            var(--sp-5);
+    }
+
+    .banner-title {
+        font-size: 16px;
+    }
+
+    .banner-desc {
+        font-size: 11px;
+    }
+
+    .banner-bg {
+        object-position: center;
+    }
+
+    .banner-content {
+        max-width: 280px;
+    }
+}
+
+/* ============================================================
+   MOST ORDERED & LOVED
+   Historical-order cards have a fixed width so cart controls
+   can never resize/reflow the cards when ADD is clicked.
+   ============================================================ */
+
+.most-ordered-scroll {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 16px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+.most-ordered-card {
+    flex: 0 0 220px !important;
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+    box-sizing: border-box !important;
+}
+
+.most-ordered-image {
+    display: block;
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.most-ordered-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 42px;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.most-ordered-price {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--clr-text-1);
+}
+
+.most-ordered-cart-action {
+    flex: 0 0 108px !important;
+    width: 108px !important;
+    min-width: 108px !important;
+    max-width: 108px !important;
+    height: 34px;
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+}
+
+.most-ordered-add-btn {
+    width: 108px;
+    height: 34px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #FF6B35;
+    color: #FF6B35;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.most-ordered-qty-control {
+    width: 108px;
+    height: 34px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #FF6B35;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.most-ordered-qty-control button {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    padding: 0;
+    background: #fff;
+    border: none;
+    color: #FF6B35;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.most-ordered-qty-control .qty-val {
+    flex: 1 1 auto;
+    min-width: 20px;
+    padding: 0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #333;
+}
+
+
+/* ============================================================
+   MOST ORDERED & LOVED — STABLE CARD LAYOUT
+   ============================================================ */
+
+/* This section is intentionally isolated from the generic .h-scroll/.food-card rules above. */
+#scrollRecommended.most-ordered-scroll {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    min-width: 0 !important;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-card {
+    flex: 0 0 220px !important;
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+    min-height: 330px;
+    box-sizing: border-box !important;
+    overflow: hidden;
+    contain: layout paint;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-image {
+    display: block;
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 42px;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-price {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--clr-text-1);
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-cart-action {
+    flex: 0 0 108px !important;
+    width: 108px !important;
+    min-width: 108px !important;
+    max-width: 108px !important;
+    height: 34px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box !important;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-add-btn,
+#scrollRecommended.most-ordered-scroll .most-ordered-qty-control {
+    width: 108px !important;
+    height: 34px !important;
+    min-width: 108px !important;
+    max-width: 108px !important;
+    box-sizing: border-box !important;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-add-btn {
+    padding: 0 !important;
+    background: #fff;
+    border: 1px solid #FF6B35;
+    color: #FF6B35;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-qty-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #FF6B35;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-qty-control button {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    padding: 0;
+    background: #fff;
+    border: none;
+    color: #FF6B35;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-qty-control .qty-val {
+    flex: 1 1 auto;
+    min-width: 20px;
+    padding: 0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #333;
+}
+
+#scrollRecommended.most-ordered-scroll .most-ordered-add-btn[hidden],
+#scrollRecommended.most-ordered-scroll .most-ordered-qty-control[hidden] {
+    display: none !important;
+}

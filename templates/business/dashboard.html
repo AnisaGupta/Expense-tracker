@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="LocalBites Business Dashboard — Overview, notifications, sales analytics, and settings.">
+    <meta name="theme-color" content="#2E7D32">
+
+    <title>LocalBites — Business Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/business-dashboard.css') }}">
+</head>
+
+<body class="page-shell" data-page="business-dashboard">
+
+    <!-- Ambient Blobs -->
+    <div class="blob blob-tr"
+        style="opacity: 0.35; background: radial-gradient(circle, rgba(46,125,50,0.08) 0%, transparent 70%);">
+    </div>
+
+    <div class="blob blob-bl"
+        style="opacity: 0.35; background: radial-gradient(circle, rgba(255,107,53,0.06) 0%, transparent 70%);">
+    </div>
+
+    <!-- ── TOP NAVIGATION NAVBAR ── -->
+    <nav class="top-nav" id="mainTopNav">
+
+        <div class="nav-left">
+
+            <button class="menu-trigger" id="sidebarToggle" aria-label="Toggle Navigation Menu">
+                <svg viewBox="0 0 24 24">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+
+            <div class="auth-logo-block">
+
+                <img src="{{ url_for('static', filename='images/LocalBites.png') }}"
+                    alt="LocalBites Logo"
+                    class="logo-img logo-img-sm"
+                    onerror="this.style.display='none'; document.getElementById('bizDashFb').style.display='flex';">
+
+                <div id="bizDashFb"
+                    style="display:none; width:36px; height:36px; position:relative;"
+                    aria-hidden="true">
+
+                    <svg viewBox="0 0 200 220"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="36"
+                        height="36">
+
+                        <defs>
+                            <radialGradient id="pinG_bl"
+                                cx="40%"
+                                cy="35%"
+                                r="65%">
+
+                                <stop offset="0%" stop-color="#FF8C5A" />
+                                <stop offset="100%" stop-color="#E55A25" />
+
+                            </radialGradient>
+                        </defs>
+
+                        <path
+                            d="M100 12 C65 12 37 40 37 75 C37 120 100 208 100 208 C100 208 163 120 163 75 C163 40 135 12 100 12Z"
+                            fill="url(#pinG_bl)"
+                            opacity=".96" />
+
+                        <circle
+                            cx="100"
+                            cy="74"
+                            r="34"
+                            fill="white"
+                            opacity=".96" />
+
+                        <path
+                            d="M80 74 Q80 92 100 92 Q120 92 120 74"
+                            stroke="#FF6B35"
+                            stroke-width="3.2"
+                            fill="none"
+                            stroke-linecap="round" />
+
+                        <line
+                            x1="80"
+                            y1="74"
+                            x2="120"
+                            y2="74"
+                            stroke="#FF6B35"
+                            stroke-width="3"
+                            stroke-linecap="round" />
+
+                        <path
+                            d="M91 63 Q88 55 91 47"
+                            stroke="#2E7D32"
+                            stroke-width="2.4"
+                            fill="none"
+                            stroke-linecap="round" />
+
+                        <path
+                            d="M100 60 Q97 52 100 44"
+                            stroke="#2E7D32"
+                            stroke-width="2.4"
+                            fill="none"
+                            stroke-linecap="round" />
+
+                        <path
+                            d="M109 63 Q106 55 109 47"
+                            stroke="#2E7D32"
+                            stroke-width="2.4"
+                            fill="none"
+                            stroke-linecap="round" />
+
+                    </svg>
+                </div>
+
+                <div class="wordmark wordmark-md">
+                    <span class="l">Local</span>
+                    <span class="b">Bites</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="nav-right">
+
+            <!-- Verification Quick Badge -->
+            <div class="header-status-badge approved" id="headerVerificationBadge">
+                <span class="dot"></span>
+                Approved
+            </div>
+<!-- Profile Dropdown Trigger -->
+            <div class="profile-dropdown-wrap" id="profileDropdownWrap">
+
+                <button class="profile-avatar"
+                    id="headerProfileAvatar"
+                    aria-label="Toggle Profile Dropdown">
+
+                    <span id="headerProfileInitials">🏪</span>
+
+                </button>
+
+                <div class="profile-dropdown-menu" id="profileDropdownMenu">
+
+                    <div class="dropdown-header">
+                        <p class="dropdown-biz-name" id="dropdownBizName">
+                            Loading Business...
+                        </p>
+
+                        <p class="dropdown-owner-name" id="dropdownOwnerName">
+                            Owner Name
+                        </p>
+                    </div>
+
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item" href="/business/profile">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+
+                        My Business Profile
+
+                    </a>
+
+                    <a class="dropdown-item" href="/business/dashboard#settings">
+
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83-2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+
+                        Settings
+
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <button class="dropdown-item logout-action text-danger"
+                        id="dropdownLogoutBtn">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+
+                        Sign Out
+
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── MAIN DASHBOARD CONTAINER ── -->
+    <div class="dashboard-shell-layout">
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar-aside" id="sidebarMenu">
+
+            <!-- Sidebar business details -->
+            <div class="sidebar-biz-header">
+
+                <div class="biz-avatar-box">
+
+                    <img id="sidebarBizLogo"
+                        src="{{ url_for('static', filename='images/LocalBites.png') }}"
+                        alt="Business Logo"
+                        onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%232e7d32%22/><text x=%2250%25%22 y=%2250%25%22 font-size=%2228%22 fill=%22%23fff%22 font-family=%22sans-serif%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22>LB</text></svg>';">
+
+                </div>
+
+                <div class="biz-info-meta">
+
+                    <h3 class="biz-name-text" id="sidebarBizName">
+                        Loading...
+                    </h3>
+
+                    <p class="biz-type-text" id="sidebarBizType">
+                        Kitchen Service
+                    </p>
+
+                </div>
+            </div>
+
+            <!-- Sidebar Nav Links -->
+            <nav class="sidebar-nav">
+
+                <a class="nav-link"
+                    href="/business/dashboard#overview"
+                    data-page="dashboard">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="9" />
+                        <rect x="14" y="3" width="7" height="5" />
+                        <rect x="14" y="12" width="7" height="9" />
+                        <rect x="3" y="16" width="7" height="5" />
+                    </svg>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+                <a class="nav-link"
+                    href="/business/profile"
+                    data-page="profile">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+
+                    <span>My Business</span>
+
+                </a>
+
+                <a class="nav-link"
+                    href="/business/menu"
+                    data-page="menu">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+
+                    <span>Menu Management</span>
+
+                </a>
+
+                <a class="nav-link"
+                    href="/business/orders"
+                    data-page="orders">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+
+                    <span>Orders</span>
+
+                    <span class="sidebar-badge hidden" id="sidebarOrdersBadge">
+                        0
+                    </span>
+
+                </a>
+
+                <a class="nav-link"
+                    href="/business/delivery"
+                    data-page="delivery">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="1" y="3" width="15" height="13" />
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                        <circle cx="5.5" cy="18.5" r="2.5" />
+                        <circle cx="18.5" cy="18.5" r="2.5" />
+                    </svg>
+
+                    <span>Delivery Management</span>
+
+                    <span class="sidebar-badge hidden" id="sidebarDeliveryBadge">
+                        0
+                    </span>
+
+                </a>
+
+                <a class="nav-link"
+                    href="/business/delivery-persons"
+                    data-page="delivery-persons">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="9" cy="8" r="4" />
+                        <path d="M3 21v-2a6 6 0 0 1 12 0v2" />
+                        <path d="M16 11a4 4 0 0 1 5 4v6" />
+                        <path d="M15 4a4 4 0 0 1 0 7" />
+                    </svg>
+
+                    <span>Delivery Persons</span>
+
+                </a>
+
+                <a class="nav-link"
+                    href="/business/reviews"
+                    data-page="reviews">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+
+                    <span>Reviews</span>
+
+                </a>
+<a class="nav-link"
+                    href="/business/dashboard#analytics"
+                    data-page="analytics">
+
+                    <svg viewBox="0 0 24 24">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+
+                    <span>Analytics</span>
+
+                </a>
+
+                <a class="nav-link"
+                    href="/business/dashboard#settings"
+                    data-page="settings">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82V9a1.65 1.65 0 0 0 1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+
+                    <span>Settings</span>
+
+                </a>
+
+            </nav>
+
+            <!-- Sidebar footer / Logout -->
+            <div class="sidebar-footer">
+
+                <button class="nav-logout logout-action" id="sidebarLogoutBtn">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+
+                    <span>Logout</span>
+
+                </button>
+
+            </div>
+
+        </aside>
+
+        <!-- Main content view blocks -->
+        <main class="content-body" id="tabContentBody">
+
+            <!-- =====================================================
+                 SECTION 1 — OVERVIEW TAB
+            ===================================================== -->
+
+            <div class="tab-panel active" id="panel-overview">
+
+                <div class="welcome-header flex justify-between items-center flex-wrap gap-4">
+
+                    <div>
+
+                        <h1 class="page-title text-3xl font-extrabold mb-1">
+                            Welcome back,
+                            <span id="welcomeBizName">[Business Name]</span>! 👋
+                        </h1>
+
+                        <p class="text-secondary text-sm">
+                            Here is a quick overview of your food business performance today.
+                        </p>
+
+                    </div>
+
+                    <div class="current-date-badge text-xs" id="dashboardDate">
+                        August 13, 2026
+                    </div>
+
+                </div>
+
+                <!-- Admin Verification Status Warning/Banner -->
+                <div class="verification-alert-banner approved mt-5 hidden"
+                    id="verificationAlertBanner">
+
+                    <div class="alert-icon-block">
+                        📢
+                    </div>
+
+                    <div class="alert-details-block">
+
+                        <h4 class="alert-title font-bold text-sm"
+                            id="verificationAlertTitle">
+                            Registration status
+                        </h4>
+
+                        <p class="alert-message text-xs"
+                            id="verificationAlertMessage">
+                            Details remarks
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- Stats summary cards -->
+                <div class="stats-summary-grid mt-6">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon orders-bg">📦</div>
+
+                        <div class="stat-body">
+
+                            <span class="stat-label">Today's Orders</span>
+
+                            <h3 class="stat-value" id="statTodayOrders">
+                                0
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon pending-bg">⏳</div>
+
+                        <div class="stat-body">
+
+                            <span class="stat-label">Pending Orders</span>
+
+                            <h3 class="stat-value" id="statPendingOrders">
+                                0
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon revenue-bg">₹</div>
+
+                        <div class="stat-body">
+
+                            <span class="stat-label">Today's Revenue</span>
+
+                            <h3 class="stat-value" id="statTodayRevenue">
+                                ₹0
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon rating-bg">★</div>
+
+                        <div class="stat-body">
+
+                            <span class="stat-label">Average Rating</span>
+
+                            <h3 class="stat-value" id="statAvgRating">
+                                0.0
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Recent Orders Section -->
+                <div class="content-card mt-6">
+
+                    <div class="card-header flex justify-between items-center flex-wrap gap-3">
+
+                        <h2 class="section-title text-lg font-bold">
+                            Recent Customer Orders
+                        </h2>
+
+                        <a class="btn btn-ghost btn-xs"
+                            href="/business/orders">
+
+                            View All Orders
+
+                            <svg viewBox="0 0 24 24"
+                                width="14"
+                                height="14"
+                                style="stroke: currentColor; fill:none; stroke-width: 2.2; margin-left: 4px;">
+
+                                <polyline points="9 18 15 12 9 6" />
+
+                            </svg>
+
+                        </a>
+
+                    </div>
+
+                    <div class="table-container mt-4">
+
+                        <table class="data-table" id="recentOrdersTable">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Amount</th>
+                                    <th>Time</th>
+                                    <th>Fulfillment</th>
+                                    <th>Status</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="recentOrdersList">
+                                <!-- Dynamic Render -->
+                            </tbody>
+
+                        </table>
+
+                        <div id="recentOrdersEmptyState"
+                            class="empty-state-box hidden">
+
+                            <div class="empty-emoji">🍲</div>
+
+                            <h3 class="empty-title">
+                                No orders received yet
+                            </h3>
+
+                            <p class="empty-subtitle">
+                                When customer orders arrive, they will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- =====================================================
+                 SECTION 2 — ANALYTICS TAB
+            ===================================================== -->
+
+            <div class="tab-panel" id="panel-analytics">
+
+                <div>
+
+                    <h1 class="page-title text-2xl font-extrabold mb-1">
+                        Business Analytics
+                    </h1>
+
+                    <p class="text-secondary text-sm">
+                        Review volume charts and sales metrics for your food business.
+                    </p>
+
+                </div>
+
+                <!-- Metrics breakdown -->
+                <div class="analytics-metrics-grid mt-5">
+
+                    <div class="metric-mini-card">
+
+                        <span class="m-lbl">Today's Orders</span>
+
+                        <h3 class="m-val" id="analyticsOrdersToday">
+                            0
+                        </h3>
+
+                        <span class="m-sub text-success">
+                            ↑ 12% vs yesterday
+                        </span>
+
+                    </div>
+
+                    <div class="metric-mini-card">
+
+                        <span class="m-lbl">Weekly Orders</span>
+
+                        <h3 class="m-val" id="analyticsOrdersWeek">
+                            0
+                        </h3>
+
+                        <span class="m-sub text-success">
+                            ↑ 8% vs last week
+                        </span>
+
+                    </div>
+
+                    <div class="metric-mini-card">
+
+                        <span class="m-lbl">Monthly Orders</span>
+
+                        <h3 class="m-val" id="analyticsOrdersMonth">
+                            104
+                        </h3>
+
+                        <span class="m-sub text-success">
+                            ↑ 15% overall growth
+                        </span>
+
+                    </div>
+
+                    <div class="metric-mini-card">
+
+                        <span class="m-lbl">Cancelled Orders</span>
+
+                        <h3 class="m-val"
+                            style="color:var(--clr-error);"
+                            id="analyticsOrdersCancelled">
+                            0
+                        </h3>
+
+                        <span class="m-sub text-danger">
+                            4.2% cancellation rate
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- Custom SVG charts -->
+                <div class="analytics-charts-grid mt-6">
+
+                    <div class="chart-card">
+
+                        <h3 class="chart-title mb-4 font-bold text-sm">
+                            Weekly Orders History
+                        </h3>
+
+                        <div class="chart-canvas-container"
+                            id="barChartContainer">
+                            <!-- SVG Rendered by JS -->
+                        </div>
+
+                    </div>
+
+                    <div class="chart-card">
+
+                        <h3 class="chart-title mb-4 font-bold text-sm">
+                            Daily Revenue Trend (₹)
+                        </h3>
+
+                        <div class="chart-canvas-container"
+                            id="lineChartContainer">
+                            <!-- SVG Rendered by JS -->
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- =====================================================
+                 SECTION 4 — SETTINGS TAB
+            ===================================================== -->
+
+            <div class="tab-panel" id="panel-settings">
+
+                <div>
+
+                    <h1 class="page-title text-2xl font-extrabold mb-1">
+                        Dashboard Settings
+                    </h1>
+
+                    <p class="text-secondary text-sm">
+                        Modify security credentials and browser notification variables.
+                    </p>
+
+                </div>
+
+                <div class="profile-card-container mt-5">
+
+                    <h4 class="form-subtitle-sec">
+                        Alert Configurations
+                    </h4>
+
+                    <div class="checkbox-options-wrap mt-3">
+
+                        <label class="custom-checkbox-lbl">
+
+                            <input type="checkbox" id="settSound" checked>
+
+                            <span class="checkmark"></span>
+
+                            <div class="chk-details">
+
+                                <span class="chk-name">
+                                    Incoming Order Alarm Tone
+                                </span>
+
+                                <span class="chk-desc text-secondary">
+                                    Play alert synthesizer tone when a new customer order is simulated
+                                </span>
+
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                    <div class="dropdown-divider mt-5 mb-5"></div>
+
+                    <h4 class="form-subtitle-sec">
+                        Security (Change Password)
+                    </h4>
+
+                    <form id="settingsPasswordForm"
+                        novalidate
+                        class="mt-3">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label class="form-label"
+                                    for="settOldPw">
+                                    Current Password
+                                </label>
+
+                                <div class="inp-wrap">
+
+                                    <input type="password"
+                                        id="settOldPw"
+                                        class="form-input"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label class="form-label"
+                                    for="settNewPw">
+                                    New Password
+                                </label>
+
+                                <div class="inp-wrap">
+
+                                    <input type="password"
+                                        id="settNewPw"
+                                        class="form-input"
+                                        required
+                                        placeholder="Min 8 characters">
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label class="form-label"
+                                    for="settConfirmPw">
+                                    Confirm Password
+                                </label>
+
+                                <div class="inp-wrap">
+
+                                    <input type="password"
+                                        id="settConfirmPw"
+                                        class="form-input"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <button type="submit"
+                            class="btn btn-secondary btn-full-mobile mt-4">
+
+                            Update Password
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Toast elements -->
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+
+    <script>
+        window.LB_REAL_BUSINESS = {{ real_business | tojson }};
+    </script>
+
+    <script src="{{ url_for('static', filename='js/business-state.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/business-dashboard.js') }}"></script>
+
+</body>
+
+</html>

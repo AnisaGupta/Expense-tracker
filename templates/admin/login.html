@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>LocalBites — Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body class="page-shell auth-page" data-page="admin-login">
+
+    <div class="blob blob-tr"></div>
+    <div class="blob blob-bl"></div>
+
+    <header class="auth-topbar">
+        <div class="auth-logo-block">
+            <div class="wordmark wordmark-md"><span class="l">Local</span><span class="b">Bites</span></div>
+        </div>
+    </header>
+
+    <main class="auth-main flex flex-col items-center">
+        <div class="auth-card relative">
+            <div class="auth-screen active" id="scr-admin-login">
+                <div class="mb-6">
+                    <h1 class="scr-title">Admin Sign In</h1>
+                    <p class="scr-sub">Restricted access — authorized personnel only.</p>
+                </div>
+
+                <form id="adminLoginForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="adminUsername">Username</label>
+                        <input type="text" id="adminUsername" class="form-input" autocomplete="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" class="form-input form-input-pw" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-full btn-secondary">
+                        <span class="btn-label">Sign In</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('adminLoginForm');
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                if (!LB.validateForm(form)) return;
+
+                const btn = form.querySelector('button[type="submit"]');
+                const payload = {
+                    username: document.getElementById('adminUsername').value.trim(),
+                    password: document.getElementById('adminPassword').value
+                };
+
+                LB.setLoading(btn, true);
+                fetch(window.location.pathname, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                    .then(res => res.json().then(data => ({ ok: res.ok, data })))
+                    .then(({ ok, data }) => {
+                        LB.setLoading(btn, false);
+                        if (!ok || !data.success) {
+                            LB.toast(data.message || 'Invalid username or password.', 'error');
+                            return;
+                        }
+                        LB.navigate(data.redirect);
+                    })
+                    .catch(() => {
+                        LB.setLoading(btn, false);
+                        LB.toast('Network error — please try again.', 'error');
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

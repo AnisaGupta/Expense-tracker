@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders — LocalBites</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
+</head>
+<body class="page-shell" data-page="orders">
+
+    <!-- Global Header -->
+    {% include 'customer/_header.html' %}
+
+    <!-- Main Outer Container (Matches Profile Page Max-Width & Padding) -->
+    <main class="orders-page-container" style="width: 100%; margin: 32px 0 60px 0; padding: 0 20px; box-sizing: border-box;">
+        
+        <!-- Expanded Full-Width Sub-Header Hero Banner -->
+        <section class="orders-sub-header" style="width: 100%; background: linear-gradient(135deg, #ffffff, #fff7f2); border: 1px solid #fee6d8; border-radius: 16px; padding: 28px 32px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.04); box-sizing: border-box;">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(255, 107, 53, 0.12); color: #FF6B35; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <div>
+                    <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">My Orders</h1>
+                    <p style="font-size: 14px; color: #64748b; margin: 0;">Track active deliveries and view your past order history</p>
+                </div>
+            </div>
+
+            <!-- Back to Home Action -->
+            <a href="{{ url_for('customer.dashboard') }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; background: #ffffff; border: 1px solid #e2e8f0; color: #334155; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s ease;">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+        </section>
+
+        <!-- Dynamic Orders List Container -->
+        <div id="ordersList" style="width: 100%;">
+            <div class="orders-empty-state" style="text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
+                <i class="fa-solid fa-spinner fa-spin fa-2x" style="color: #FF6B35;"></i>
+                <p style="margin-top: 14px; font-weight: 700; color: #475569; font-size: 14px;">Loading your order history...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="foodReviewModal" class="modal-overlay" style="display:none;align-items:center;justify-content:center;">
+        <div class="modal-container" style="width:min(520px,calc(100% - 32px));max-height:90vh;overflow:auto;">
+            <div class="modal-header"><div><h2 class="modal-title" id="foodReviewTitle">Review Food Item</h2><p id="foodReviewOrderLabel" style="margin:4px 0 0;font-size:12px;color:#64748b;"></p></div><button type="button" class="modal-close" id="closeFoodReviewModal" aria-label="Close">×</button></div>
+            <form id="foodReviewForm"><div class="modal-body">
+                <input type="hidden" id="reviewOrderId"><input type="hidden" id="reviewMenuId">
+                <div style="padding:14px 16px;background:#fff7f2;border:1px solid #fee6d8;border-radius:12px;margin-bottom:18px;"><div id="reviewFoodName" style="font-size:16px;font-weight:800;color:#0f172a;"></div><div id="reviewBusinessName" style="font-size:12px;color:#64748b;margin-top:4px;"></div></div>
+                <div class="form-group"><label class="form-label">Your Rating</label><div id="reviewStarsPicker" style="display:flex;gap:8px;margin-top:8px;"><button type="button" class="review-star-btn" data-rating="1">★</button><button type="button" class="review-star-btn" data-rating="2">★</button><button type="button" class="review-star-btn" data-rating="3">★</button><button type="button" class="review-star-btn" data-rating="4">★</button><button type="button" class="review-star-btn" data-rating="5">★</button></div><input type="hidden" id="reviewRating" value="0"></div>
+                <div class="form-group" style="margin-top:18px;"><label class="form-label" for="reviewComment">Your Review</label><textarea id="reviewComment" class="form-textarea" rows="4" maxlength="1000" placeholder="Tell us what you liked or what could be better..."></textarea><small style="display:block;margin-top:5px;color:#64748b;">Optional · Maximum 1000 characters</small></div>
+                <div class="modal-actions" style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;"><button type="button" class="btn btn-secondary" id="cancelFoodReviewBtn">Cancel</button><button type="submit" class="btn btn-primary" id="submitFoodReviewBtn">Submit Review</button></div>
+            </div></form>
+        </div>
+    </div>
+    <style>.review-star-btn{border:0;background:transparent;color:#cbd5e1;font-size:32px;line-height:1;cursor:pointer;padding:0;transition:transform .15s ease,color .15s ease}.review-star-btn.active{color:#f59e0b}.review-star-btn:hover{transform:scale(1.08)}.order-review-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.btn-review-item{border:1px solid #FF6B35;background:#fff;color:#FF6B35;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}.btn-review-item.reviewed{border-color:#2E7D32;background:#e8f5e9;color:#2E7D32}</style>
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/orders.js') }}"></script>
+</body>
+</html>

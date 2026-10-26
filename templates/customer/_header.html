@@ -1,0 +1,89 @@
+<!-- ── UNIFIED TOP NAVIGATION HEADER ── -->
+<nav class="top-nav">
+    <div class="nav-left">
+        <button class="menu-trigger" id="menuTrigger" aria-label="Open menu">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="wordmark wordmark-md" onclick="window.location.href='{{ url_for('customer.dashboard') }}'" style="cursor: pointer;">
+            <span class="l">Local</span><span class="b">Bites</span>
+        </div>
+    </div>
+
+    <div class="nav-right">
+        <!-- Global Navigation Cart Icon (Cart version) -->
+                <a href="{{ url_for('customer.cart') }}" class="header-cart-btn" aria-label="View Cart" style="position: relative; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--clr-surface, #fff); border: 1px solid var(--clr-border-1, #e2e8f0); color: var(--clr-text-1, #0f172a); text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-right: 4px;">
+                  <i class="fa-solid fa-cart-shopping" style="font-size: 15px; color: #FF6B35;"></i>
+    
+        <!-- Dynamic Cart Counter Badge -->
+                 <span id="cartItemCountBadge" style="position: absolute; top: -4px; right: -4px; background: #FF6B35; color: #fff; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    0
+                 </span>
+                </a>
+
+    
+        <div class="profile-avatar" id="profileAvatar" aria-label="Profile" onclick="window.location.href='{{ url_for('customer.profile') }}'" style="cursor: pointer;">
+            <span>{{ current_user.full_name[0] | upper if current_user and current_user.full_name else 'C' }}</span>
+        </div>
+    </div>
+</nav>
+
+<!-- ── SLIDE-OUT SIDE DRAWER PANEL ── -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+        <div class="wordmark wordmark-md">
+            <span class="l">Local</span><span class="b">Bites</span>
+        </div>
+        <button type="button" class="drawer-close-btn" id="closeDrawerBtn" aria-label="Close Menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <div class="drawer-user-card">
+        <div class="avatar-circle">
+            <span>{{ current_user.full_name[0] | upper if current_user and current_user.full_name else 'C' }}</span>
+        </div>
+        <div class="user-meta">
+            <h4>{{ current_user.full_name if current_user and current_user.full_name else 'Customer' }}</h4>
+            <p>@{{ current_user.username if current_user and current_user.username else 'user' }}</p>
+        </div>
+    </div>
+
+    <nav class="drawer-nav">
+        <a href="{{ url_for('customer.dashboard') }}" class="drawer-link">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="{{ url_for('customer.profile') }}" class="drawer-link">
+            <i class="fa-regular fa-user"></i>
+            <span>Profile</span>
+        </a>
+        <a href="{{ url_for('customer.orders_page') }}" class="drawer-link">
+            <i class="fa-solid fa-receipt"></i>
+            <span>My Orders</span>
+        </a>
+        <a href="{{ url_for('customer.favorites_page') }}" class="drawer-link">
+            <i class="fa-regular fa-heart"></i>
+            <span>Favorites</span>
+        </a>
+        <a href="{{ url_for('customer.policy') }}"
+            class="drawer-link {% if request.endpoint == 'customer.policy' %}active{% endif %}">
+                <i class="fa-regular fa-file-lines"></i>
+                <span>Policy</span>
+        </a>
+        <!-- HELP & SUPPORT -->
+        <a href="{{ url_for('customer.help') }}"
+           class="drawer-link {% if request.endpoint == 'customer.help' %}active{% endif %}">
+            <i class="fa-regular fa-circle-question"></i>
+            <span>Help &amp; Support</span>
+        </a>
+    </nav>
+
+    <div class="drawer-footer">
+        <button type="button" class="btn-logout-drawer" onclick="fetch('/customer/logout', {method:'POST'}).then(() => window.location.href='/customer/login');">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Sign Out</span>
+        </button>
+    </div>
+</aside>

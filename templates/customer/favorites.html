@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Favorites — LocalBites</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/favorites.css') }}">
+</head>
+<body class="page-shell" data-page="favorites">
+
+    <!-- Global Header -->
+    {% include 'customer/_header.html' %}
+
+    <!-- Main Outer Container (Matches Profile Page Max-Width & Padding) -->
+    <main class="fav-page-container" style="max-width: 1200px; width: 100%; margin: 32px auto 60px auto; padding: 0 20px; box-sizing: border-box;">
+        
+        <!-- Expanded Full-Width Sub-Header Hero Banner -->
+        <section class="fav-sub-header" style="width: 100%; background: linear-gradient(135deg, #ffffff, #fff7f2); border: 1px solid #fee6d8; border-radius: 16px; padding: 28px 32px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.04); box-sizing: border-box;">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(255, 107, 53, 0.12); color: #FF6B35; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div>
+                    <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0;">Saved Favorites ❤️</h1>
+                    <p style="font-size: 14px; color: #64748b; margin: 0;">Quick access to your most-loved messes, home kitchens, and menu items</p>
+                </div>
+            </div>
+
+            <!-- Back to Home Action -->
+            <a href="{{ url_for('customer.dashboard') }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; background: #ffffff; border: 1px solid #e2e8f0; color: #334155; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s ease;">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Home</span>
+            </a>
+        </section>
+
+        <!-- Dynamic Favorites Grid -->
+        <div id="favoritesGrid" class="fav-grid" style="width: 100%;">
+            <!-- Dynamically injected via JavaScript -->
+        </div>
+    </main>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/favorites.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="LocalBites Help and Support">
+
+    <title>LocalBites — Help & Support</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Common CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/common.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Help CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/help.css') }}">
+</head>
+
+<body class="page-shell" data-page="help" >
+
+    <!-- Customer Header / Side Menu -->
+    {% include 'customer/_header.html' %}
+
+
+    <main class="help-page">
+
+        <!-- =====================================================
+             HERO
+             ===================================================== -->
+
+        <section class="help-hero">
+
+            <div class="help-hero-content">
+
+                <div class="help-hero-icon">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+
+                <div>
+
+                    <span class="help-eyebrow">
+                        LOCALBITES SUPPORT
+                    </span>
+
+                    <h1>
+                        How can we help you?
+                    </h1>
+
+                    <p>
+                        Have a question, facing an issue, or need help
+                        with LocalBites? We're here to help.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             QUICK HELP CARDS
+             ===================================================== -->
+
+        <section class="quick-help">
+
+            <div class="help-card">
+
+                <div class="help-card-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+
+                <h3>Orders</h3>
+
+                <p>
+                    Having trouble placing, tracking or cancelling
+                    an order?
+                </p>
+
+            </div>
+
+
+            <div class="help-card">
+
+                <div class="help-card-icon">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <h3>Account</h3>
+
+                <p>
+                    Need help with your account, login or verification?
+                </p>
+
+            </div>
+
+
+            <div class="help-card">
+
+                <div class="help-card-icon">
+                    <i class="fa-solid fa-credit-card"></i>
+                </div>
+
+                <h3>Payments</h3>
+
+                <p>
+                    Facing an issue with payment or your order amount?
+                </p>
+
+            </div>
+
+
+            <div class="help-card">
+
+                <div class="help-card-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+
+                <h3>Delivery</h3>
+
+                <p>
+                    Have questions about delivery or pickup?
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             FAQ
+             ===================================================== -->
+
+        <section class="faq-section">
+
+            <div class="section-heading">
+
+                <span class="section-label">
+                    QUICK ANSWERS
+                </span>
+
+                <h2>
+                    Frequently Asked Questions
+                </h2>
+
+                <p>
+                    Check these common questions before submitting
+                    a query.
+                </p>
+
+            </div>
+
+
+            <div class="faq-list">
+
+                <details class="faq-item">
+
+                    <summary>
+                        <span>
+                            How do I place an order?
+                        </span>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </summary>
+
+                    <div class="faq-answer">
+
+                        <p>
+                            Browse the available local food businesses,
+                            select a food item, add it to your cart and
+                            proceed to checkout.
+                        </p>
+
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+
+                        <span>
+                            How can I check my order status?
+                        </span>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </summary>
+
+                    <div class="faq-answer">
+
+                        <p>
+                            Open the My Orders section from your account
+                            menu to view your order details and current
+                            order status.
+                        </p>
+
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+
+                        <span>
+                            I did not receive my OTP. What should I do?
+                        </span>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </summary>
+
+                    <div class="faq-answer">
+
+                        <p>
+                            Check your spam or junk folder first. If the
+                            OTP still does not arrive, wait a short while
+                            and request a new OTP.
+                        </p>
+
+                    </div>
+
+                </details>
+
+
+                <details class="faq-item">
+
+                    <summary>
+
+                        <span>
+                            Can I cancel my order?
+                        </span>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </summary>
+
+                    <div class="faq-answer">
+
+                        <p>
+                            Cancellation may depend on the current status
+                            of your order and the cancellation rules of
+                            the selected food provider.
+                        </p>
+
+                    </div>
+
+                </details>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             GOOGLE FORM
+             ===================================================== -->
+
+        <section class="query-section">
+
+            <div class="query-heading">
+
+                <div class="query-heading-icon">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+
+                <div>
+
+                    <span class="section-label">
+                        CONTACT SUPPORT
+                    </span>
+
+                    <h2>
+                        Still need help?
+                    </h2>
+
+                    <p>
+                        Tell us what you're facing and submit your query.
+                        Our team can review your request and get back to you.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Google Form Container -->
+
+            <div class="google-form-wrapper">
+
+                <!--
+                    REPLACE THE URL BELOW WITH YOUR GOOGLE FORM
+                    EMBED URL.
+
+                    Example:
+                    https://docs.google.com/forms/d/e/FORM_ID/viewform?embedded=true
+                -->
+
+                <iframe
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSc9WwjAWLe8ubGKBKVZj5jyc3SlF8PCq3FqPUMMO32lp8gFGA/viewform?embedded=true"
+                    class="google-form"
+                    title="LocalBites Support Form"
+                    loading="lazy">
+                </iframe>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SUPPORT NOTE
+             ===================================================== -->
+
+        <section class="support-note">
+
+            <div class="support-note-icon">
+                <i class="fa-solid fa-shield-heart"></i>
+            </div>
+
+            <div>
+
+                <h3>
+                    We're here to help
+                </h3>
+
+                <p>
+                    Please provide accurate information when submitting
+                    your query. Do not share passwords, OTPs or other
+                    confidential account information in the support form.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <p class="help-footer">
+            LocalBites Support • We're happy to help
+        </p>
+
+    </main>
+
+
+    <!-- Common JavaScript -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+
+</body>
+</html>

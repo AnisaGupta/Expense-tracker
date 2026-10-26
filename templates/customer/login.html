@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LocalBites Customer Login — Sign in to discover nearby local food.">
+    <meta name="theme-color" content="#FF6B35">
+    <title>LocalBites — Customer Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body class="page-shell auth-page" data-page="customer-login">
+
+    <div class="blob blob-tr"></div>
+    <div class="blob blob-bl"></div>
+
+    <header class="auth-topbar">
+        <button class="back-btn" id="globalBack" data-dest="/role" aria-label="Go back">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="auth-logo-block">
+            <img src="{{ url_for('static', filename='images/LocalBites.png') }}" alt="LocalBites" class="logo-img logo-img-md"
+                 onerror="this.style.display='none'; document.getElementById('topFb').style.display='flex';">
+            <div id="topFb" style="display:none; width:56px; height:56px; position:relative;" aria-hidden="true">
+                <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                    <defs><radialGradient id="pinG_cl" cx="40%" cy="35%" r="65%"><stop offset="0%" stop-color="#FF8C5A"/><stop offset="100%" stop-color="#E55A25"/></radialGradient></defs>
+                    <path d="M100 12 C65 12 37 40 37 75 C37 120 100 208 100 208 C100 208 163 120 163 75 C163 40 135 12 100 12Z" fill="url(#pinG_cl)" opacity=".96"/>
+                    <circle cx="100" cy="74" r="34" fill="white" opacity=".96"/>
+                    <path d="M80 74 Q80 92 100 92 Q120 92 120 74" stroke="#FF6B35" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                    <line x1="80" y1="74" x2="120" y2="74" stroke="#FF6B35" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M91 63 Q88 55 91 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                    <path d="M100 60 Q97 52 100 44" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                    <path d="M109 63 Q106 55 109 47" stroke="#2E7D32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="wordmark wordmark-md">
+                <span class="l">Local</span><span class="b">Bites</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-main flex flex-col items-center">
+        <div class="auth-card relative">
+
+            <!-- =====================================================
+                 SCREEN 1 — LOGIN
+            ===================================================== -->
+            <div class="auth-screen active" id="scr-login">
+                <div class="mb-6">
+                    <h1 class="scr-title">Welcome Back! 👋</h1>
+                    <p class="scr-sub">Sign in to your LocalBites account</p>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="loginUsername">Username</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </span>
+                            <input type="text" id="loginUsername" class="form-input" placeholder="Enter your username" autocomplete="username" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">Password</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </span>
+                            <input type="password" id="loginPassword" class="form-input form-input-pw" placeholder="Enter your password" autocomplete="current-password" required>
+                            <button type="button" class="pw-toggle" aria-label="Toggle password visibility">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="forgot-link-wrap">
+                        <button type="button" class="link-btn" id="forgotLink">Forgot Password?</button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span class="btn-label">Login</span>
+                    </button>
+                </form>
+
+                <div class="divider"><span class="divider-txt">or</span></div>
+                <button type="button" class="btn btn-outline btn-full" id="createAccBtn">
+                    <span class="btn-label">Create Account</span>
+                </button>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 2 — FORGOT: EMAIL
+            ===================================================== -->
+            <div class="auth-screen" id="scr-fp-email">
+                <button type="button" class="scr-back-btn" id="fpBackToLogin">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back to Login
+                </button>
+                <div class="mb-6">
+                    <h2 class="scr-title">Forgot Password 🔐</h2>
+                    <p class="scr-sub">Enter your registered email. We'll send you a verification code.</p>
+                </div>
+                <form id="fpEmailForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="fpEmail">Email Address</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </span>
+                            <input type="email" id="fpEmail" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full mt-2">
+                        <span class="btn-label">Send OTP</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 3 — FORGOT: OTP
+            ===================================================== -->
+            <div class="auth-screen" id="scr-fp-otp">
+                <button type="button" class="scr-back-btn" id="fpOtpBack">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div class="mb-5">
+                    <h2 class="scr-title">Verify OTP ✉️</h2>
+                    <p class="scr-sub">A 6-digit code was sent to<br><strong id="fpOtpEmail">your email</strong></p>
+                </div>
+                <div class="otp-meta">
+                    <div class="timer-badge">
+                        <div class="timer-icon">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <span class="timer-count" id="fpTimer">01:00</span>
+                    </div>
+                    <button type="button" class="resend-btn" id="fpResend" disabled>Resend OTP</button>
+                </div>
+                <div class="otp-wrap" id="fpOtpWrap" role="group" aria-label="One-time password">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+                    <input class="otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+                </div>
+                <button type="button" class="btn btn-primary btn-full" id="fpVerifyBtn">
+                    <span class="btn-label">Verify &amp; Continue</span>
+                </button>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 4 — FORGOT: RESET PASSWORD
+            ===================================================== -->
+            <div class="auth-screen" id="scr-fp-reset">
+                <button type="button" class="scr-back-btn" id="fpResetBack">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </button>
+                <div class="mb-6">
+                    <h2 class="scr-title">Reset Password 🔑</h2>
+                    <p class="scr-sub">Create a strong new password for your account</p>
+                </div>
+                <form id="fpResetForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="fpNewPw">New Password</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </span>
+                            <input type="password" id="fpNewPw" class="form-input form-input-pw" placeholder="Min. 8 characters" required>
+                            <button type="button" class="pw-toggle" aria-label="Toggle">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="fpConfirmPw">Confirm Password</label>
+                        <div class="inp-wrap">
+                            <span class="inp-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </span>
+                            <input type="password" id="fpConfirmPw" class="form-input form-input-pw" placeholder="Repeat your password" required>
+                            <button type="button" class="pw-toggle" aria-label="Toggle">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full mt-2">
+                        <span class="btn-label">Reset Password</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- =====================================================
+                 SCREEN 5 — FORGOT: SUCCESS
+            ===================================================== -->
+            <div class="auth-screen" id="scr-fp-success">
+                <div class="success-wrap">
+                    <div class="success-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <h2 class="success-title">Password Reset!</h2>
+                    <p class="success-desc">
+                        Your password has been updated successfully.<br>
+                        You can now log in with your new credentials.
+                    </p>
+                    <button type="button" class="btn btn-primary" id="fpReturnLogin">
+                        <span class="btn-label">Return to Login</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="toast-host" aria-live="polite"></div>
+
+    <!-- Script Links -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>
