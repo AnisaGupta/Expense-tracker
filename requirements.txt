@@ -7,3 +7,6 @@ PyMySQL>=1.1.0
 python-dotenv>=1.0.1
 razorpay>=1.4.2
 gunicorn
+pandas>=2.0.0
+numpy>=1.24.0
+mysql-connector-python
